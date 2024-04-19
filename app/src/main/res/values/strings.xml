@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Ozinshe.App</string>
+    <string name="hello">Сәлем</string>
+    <string name="enter_to_account">Аккаунтқа кіріңіз</string>
+    <string name="email">Email</string>
+    <string name="password">Құпия сөз</string>
+    <string name="are_you_forget_password">Құпия сөзді ұмыттыңыз ба?</string>
+    <string name="dont_have_account">Аккаунтыныз жоқ па?</string>
+    <string name="follow"> Тіркелу</string>
+    <string name="or">Немесе</string>
+    <string name="enter">Кіру</string>
+    <string name="login_with_google">Google-мен тіркеліңіз</string>
 </resources>
