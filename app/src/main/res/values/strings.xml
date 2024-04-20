@@ -4,10 +4,20 @@
     <string name="enter_to_account">Аккаунтқа кіріңіз</string>
     <string name="email">Email</string>
     <string name="password">Құпия сөз</string>
+    <string name="repeat_password">Құпия сөзді қайталаңыз</string>
     <string name="are_you_forget_password">Құпия сөзді ұмыттыңыз ба?</string>
     <string name="dont_have_account">Аккаунтыныз жоқ па?</string>
     <string name="follow"> Тіркелу</string>
+    <string name="fill_the_information"> Деректерді толтырыңыз</string>
     <string name="or">Немесе</string>
     <string name="enter">Кіру</string>
     <string name="login_with_google">Google-мен тіркеліңіз</string>
+    <string name="do_you_have_account">Сізде аккаунт бар ма?</string>
+    <string name="email_already_registered">Мұндай email-ы бар пайдаланушы тіркелген</string>
+    <string name="watch_history">Қарауды жалғастырыңыз</string>
+    <string name="popular_in_Ozinshe">ÖZINŞE–де танымал</string>
+    <string name="all">Барлығы</string>
+    <string name="choose_genre">Жанрды таңдаңыз</string>
+    <string name="tv_serial">Телехикая</string>
+    <string name="category_by_ages">Жасына сәйкес</string>
 </resources>

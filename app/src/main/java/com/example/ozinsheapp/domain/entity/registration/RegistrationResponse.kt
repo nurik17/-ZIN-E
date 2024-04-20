@@ -1,6 +1,6 @@
-package com.example.ozinsheapp.domain.entity
+package com.example.ozinsheapp.domain.entity.registration
 
-data class LoginResponse(
+data class RegistrationResponse(
     val accessToken: String,
     val email: String,
     val id: Int,

@@ -6,14 +6,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -59,78 +58,82 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    when (loginState) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (loginState) {
+            is Resource.Loading -> {
+                ProgressBlock()
+                Log.d("LoginScreen", "loading")
+            }
 
-        is Resource.Loading -> {
-            ProgressBlock()
-        }
+            is Resource.Success -> {
+                navigateToHome()
+                Log.d("LoginScreen", "succes")
+            }
 
-        is Resource.Success -> {
-            navigateToHome()
-        }
+            is Resource.Failure -> {
+                viewModel.changeState()
+                Log.d("LoginScreen", "failure")
+            }
 
-        is Resource.Failure -> {
-            Log.d("CheckRequestStatus", ":failure")
-        }
-
-        else -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(24.dp)
-            ) {
-
-                RegistrationTopBlock(
-                    mainText = stringResource(id = R.string.hello),
-                    subText = stringResource(id = R.string.enter_to_account)
-                )
-
-                TextFieldBlock(
-                    email = email,
-                    password = password,
-                    onEmailChanged = { newEmail ->
-                        email = newEmail
-                    },
-                    onPasswordChanged = { newPassword ->
-                        password = newPassword
-                    }
-                )
-
-                Text(
+            is Resource.Unspecified -> {
+                Log.d("LoginScreen", "unsp")
+                Column(
                     modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(top = 15.dp),
-                    text = stringResource(id = R.string.are_you_forget_password),
-                    fontSize = 14.sp,
-                    fontFamily = Constant.font500,
-                    color = PrimaryRed300
-                )
+                        .fillMaxSize()
+                        .background(Color.White)
+                        .padding(24.dp)
+                ) {
+                    RegistrationTopBlock(
+                        mainText = stringResource(id = R.string.hello),
+                        subText = stringResource(id = R.string.enter_to_account)
+                    )
 
-                ButtonWithSubTextBlock(
-                    viewModel = viewModel,
-                    email = email,
-                    password = password,
-                    buttonText = stringResource(id = R.string.enter),
-                    navigation = navigateToSignUp,
-                    annotatedString = stringResource(id = R.string.follow),
-                    subText = stringResource(id = R.string.dont_have_account)
-                )
+                    TextFieldBlock(
+                        email = email,
+                        password = password,
+                        onEmailChanged = { newEmail ->
+                            email = newEmail
+                        },
+                        onPasswordChanged = { newPassword ->
+                            password = newPassword
+                        }
+                    )
 
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 30.dp),
-                    text = stringResource(id = R.string.or),
-                    fontSize = 14.sp,
-                    fontFamily = Constant.font500,
-                    color = Grey400
-                )
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 15.dp),
+                        text = stringResource(id = R.string.are_you_forget_password),
+                        fontSize = 14.sp,
+                        fontFamily = Constant.font500,
+                        color = PrimaryRed300
+                    )
 
-                LoginWithBlock(
-                    icon = R.drawable.ic_google,
-                    blockText = stringResource(id = R.string.login_with_google)
-                )
+                    ButtonWithSubTextBlock(
+                        buttonText = stringResource(id = R.string.enter),
+                        navigation = { navigateToSignUp() },
+                        annotatedString = stringResource(id = R.string.follow),
+                        subText = stringResource(id = R.string.dont_have_account),
+                        onClickAction = {
+                            viewModel.login(email.trim(), password.trim())
+                        }
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 30.dp),
+                        text = stringResource(id = R.string.or),
+                        fontSize = 14.sp,
+                        fontFamily = Constant.font500,
+                        color = Grey400
+                    )
+
+                    LoginWithBlock(
+                        icon = R.drawable.ic_google,
+                        blockText = stringResource(id = R.string.login_with_google)
+                    )
+                }
             }
         }
     }
@@ -144,8 +147,7 @@ fun RegistrationTopBlock(
     Icon(
         modifier = Modifier
             .padding(start = 8.dp)
-            .width(6.dp)
-            .height(12.dp),
+            .size(24.dp),
         painter = painterResource(id = R.drawable.ic_back),
         contentDescription = ""
     )
@@ -169,12 +171,14 @@ fun RegistrationTopBlock(
 fun TextFieldBlock(
     email: String,
     password: String,
+    confirmPassword: String = "",
     onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit
+    onPasswordChanged: (String) -> Unit,
+    onConfirmPasswordChanged: (String) -> Unit = {},
+    includeLastTextField: Boolean = false
 ) {
-
     var showPasswordValue by remember { mutableStateOf(value = false) }
-
+    var confirmShowPasswordValue by remember { mutableStateOf(value = false) }
 
     Text(
         modifier = Modifier.padding(top = 29.dp),
@@ -227,17 +231,51 @@ fun TextFieldBlock(
             }
         }
     )
+    if (includeLastTextField) {
+        Text(
+            modifier = Modifier.padding(top = 12.dp),
+            text = stringResource(id = R.string.repeat_password),
+            fontFamily = Constant.font700,
+            fontSize = 14.sp,
+            color = Grey900
+        )
+        RegistrationTextField(
+            onValueChanged = { newPassword ->
+                onConfirmPasswordChanged(newPassword)
+            },
+            value = confirmPassword,
+            hint = "Сіздің құпия сөзіңіз",
+            leadingIcon = R.drawable.ic_message,
+            showPassword = confirmShowPasswordValue,
+            trailingIcon = {
+                if (confirmShowPasswordValue) {
+                    IconButton(onClick = { confirmShowPasswordValue = false }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_show_password),
+                            contentDescription = "show_password"
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = { confirmShowPasswordValue = true }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_show_password),
+                            contentDescription = "hide_password"
+                        )
+                    }
+                }
+            }
+        )
+    }
 }
 
 @Composable
 fun ButtonWithSubTextBlock(
-    viewModel: LoginViewModel,
-    email: String = "",
-    password: String = "",
     buttonText: String,
     navigation: () -> Unit,
     annotatedString: String,
-    subText: String
+    subText: String,
+    onClickAction: () -> Unit
 ) {
     Column() {
         CustomButton(
@@ -246,7 +284,7 @@ fun ButtonWithSubTextBlock(
                 .padding(top = 40.dp),
             text = buttonText, //Кіру
             onClick = {
-                viewModel.login(email.trim(), password.trim())
+                onClickAction()
             }
         )
         Row(
@@ -264,6 +302,9 @@ fun ButtonWithSubTextBlock(
                 textAlign = TextAlign.Center
             )
             Text(
+                modifier = Modifier.clickable {
+                    navigation()
+                },
                 text = buildAnnotatedString {
                     pushStyle(SpanStyle(color = PrimaryRed300))
                     append(" $annotatedString")
@@ -272,9 +313,6 @@ fun ButtonWithSubTextBlock(
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = Constant.font400,
-                modifier = Modifier.clickable {
-                    navigation()
-                }
             )
         }
     }

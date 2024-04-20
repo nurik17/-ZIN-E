@@ -5,13 +5,10 @@ import com.example.ozinsheapp.domain.repository.RegistrationRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class SingInUseCaseImpl @Inject constructor(
+class SignUpUseCaseImpl @Inject constructor(
     private val repository: RegistrationRepository
-): SingInUseCase {
-    override suspend fun signIn(
-        email: String,
-        password: String
-    ): Response<RegistrationResponse> {
-        return repository.signIn(email, password)
+): SignUpUseCase {
+    override suspend fun signUp(email: String, password: String): Response<RegistrationResponse> {
+        return repository.signUp(email, password)
     }
 }
