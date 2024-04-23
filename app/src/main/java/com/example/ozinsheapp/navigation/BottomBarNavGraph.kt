@@ -18,6 +18,7 @@ import com.example.ozinsheapp.presentation.search.SearchScreen
 fun BottomBarNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    navigateToMovieDetails:(Int)->Unit
 ) {
     NavHost(
         navController = navController,
@@ -35,7 +36,8 @@ fun BottomBarNavGraph(
         composable(route = MainDestinations.HomeScreen_route) {
             val homeViewModel = hiltViewModel<HomeViewModel>()
             HomeScreen(
-                viewModel = homeViewModel
+                viewModel = homeViewModel,
+                navigateToMovieDetails = navigateToMovieDetails
             )
         }
         composable(route = MainDestinations.FavouriteScreen_route) {

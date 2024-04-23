@@ -1,5 +1,7 @@
 package com.example.ozinsheapp.domain.entity.userhistory
 
+import com.example.ozinsheapp.domain.entity.home.Screenshot
+
 data class Movie(
     val categories: List<Category>,
     val categoryAges: List<CategoryAge>,

@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
+    navigateToMovieDetails:(Int)->Unit
 ) {
     Scaffold(
         bottomBar = {
@@ -27,6 +28,7 @@ fun MainScreen(
         BottomBarNavGraph(
             modifier = Modifier.padding(paddingValues),
             navController = navController,
+            navigateToMovieDetails = navigateToMovieDetails
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.ozinsheapp.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.domain.entity.home.HomeMoviesItem
+import com.example.ozinsheapp.domain.entity.home.MoviesMain
 import com.example.ozinsheapp.domain.entity.home.MoviesMainItem
 import com.example.ozinsheapp.domain.entity.userhistory.CategoryAge
 import com.example.ozinsheapp.domain.entity.userhistory.Genre
@@ -56,7 +58,8 @@ import java.util.Locale
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    navigateToMovieDetails:(Int)->Unit
 ) {
     val userHistory by viewModel.userHistory.collectAsStateWithLifecycle()
     val moviesMain by viewModel.moviesMain.collectAsStateWithLifecycle()
@@ -64,7 +67,6 @@ fun HomeScreen(
     val genres by viewModel.genres.collectAsStateWithLifecycle()
     val categoryAges by viewModel.categoryAges.collectAsStateWithLifecycle()
     val isLoadingUserHistory by viewModel.isLoadingUserHistory.collectAsStateWithLifecycle()
-
 
     val categoryNames = listOf(
         "ÖZINŞE–де танымал",
@@ -94,7 +96,10 @@ fun HomeScreen(
             items(moviesMain) { item ->
                 MoviesMain(
                     item = item,
-                    onClick = {}
+                    onClick = {
+                        navigateToMovieDetails(item.id)
+                        Log.d("movie", item.id.toString())
+                    }
                 )
             }
         }
@@ -113,7 +118,10 @@ fun HomeScreen(
             items(userHistory) { item ->
                 UserHistoryMovieItem(
                     item = item,
-                    onClick = {}
+                    onClick = {
+                        navigateToMovieDetails(item.id)
+                        Log.d("user history", item.id.toString())
+                    }
                 )
             }
         }
@@ -128,12 +136,17 @@ fun HomeScreen(
                 fontFamily = Constant.font700,
                 color = Grey900
             )
-            LazyRow(Modifier.padding(top = 30.dp)) {
-                items(moviesN) { movie ->
-                    PopularInOzinsheItem(
-                        item = movie,
-                        onClick = {}
-                    )
+            LazyRow(modifier = Modifier.padding(top = 30.dp)) {
+                items(items = moviesN) { movie ->
+                    movie.movies.forEach { item ->
+                        PopularInOzinsheItem(
+                            item = movie,
+                            onClick = {
+                                navigateToMovieDetails(item.id)
+                                Log.d("HomeScreen", "ids : ${item.id}")
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -330,6 +343,7 @@ fun PopularInOzinsheItem(
 ) {
 
     item.movies.forEach { movie ->
+        Log.d("PopularInOzinsheItem", "${movie.id}")
         Column(
             modifier = Modifier
                 .width(120.dp)

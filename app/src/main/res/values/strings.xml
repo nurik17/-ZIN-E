@@ -20,4 +20,9 @@
     <string name="choose_genre">Жанрды таңдаңыз</string>
     <string name="tv_serial">Телехикая</string>
     <string name="category_by_ages">Жасына сәйкес</string>
+    <string name="add_to_saved">Тізімге қосу</string>
+    <string name="share">Бөлісу</string>
+    <string name="show_all_text">Толығырақ</string>
+    <string name="rejisser">Режиссер:</string>
+    <string name="producer">Продюсер:</string>
 </resources>

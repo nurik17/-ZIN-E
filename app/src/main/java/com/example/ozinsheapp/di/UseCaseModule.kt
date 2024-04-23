@@ -4,10 +4,16 @@ import com.example.ozinsheapp.domain.usecase.homeUseCase.GetCategoryAgeUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetCategoryAgeUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetGenreListUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetGenreListUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.homeUseCase.GetListScreenshotUseCase
+import com.example.ozinsheapp.domain.usecase.homeUseCase.GetListScreenshotUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.homeUseCase.GetMoviesByIdUseCase
+import com.example.ozinsheapp.domain.usecase.homeUseCase.GetMoviesByIdUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetMoviesMainUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetMoviesMainUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetMoviesUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetMoviesUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.homeUseCase.GetSeasonInfoUseCase
+import com.example.ozinsheapp.domain.usecase.homeUseCase.GetSeasonInfoUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetUserHistoryUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetUserHistoryUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.registrationUseCase.SignUpUseCase
@@ -42,4 +48,14 @@ interface UseCaseModule {
 
     @Binds
     fun provideGetCategoryAgeUseCase(impl: GetCategoryAgeUseCaseImpl): GetCategoryAgeUseCase
+
+    @Binds
+    fun provideGetMoviesByIdUseCase(impl: GetMoviesByIdUseCaseImpl): GetMoviesByIdUseCase
+
+    @Binds
+    fun provideGetListScreenshotUseCase(impl: GetListScreenshotUseCaseImpl): GetListScreenshotUseCase
+
+    @Binds
+    fun provideGetSeasonInfoUseCase(impl: GetSeasonInfoUseCaseImpl): GetSeasonInfoUseCase
+
 }

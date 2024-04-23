@@ -10,4 +10,6 @@ object Constant {
     val font700 = FontFamily(Font(R.font.sf_pro_bold))
     val font500 = FontFamily(Font(R.font.sf_pro_medium))
     val font400 = FontFamily(Font(R.font.sf_pro_regular))
+
+    val inter700 = FontFamily(Font(R.font.inter_700))
 }

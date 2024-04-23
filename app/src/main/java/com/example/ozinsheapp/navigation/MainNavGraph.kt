@@ -9,16 +9,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.ozinsheapp.presentation.favourite.FavouriteScreen
-import com.example.ozinsheapp.presentation.home.HomeScreen
 import com.example.ozinsheapp.presentation.home.HomeViewModel
+import com.example.ozinsheapp.presentation.home.detail.MovieDetailsScreen
+import com.example.ozinsheapp.presentation.home.detail.SeasonInfoScreen
+import com.example.ozinsheapp.presentation.home.detail.VideoPlayerScreen
 import com.example.ozinsheapp.presentation.onboarding.OnBoardingScreen
-import com.example.ozinsheapp.presentation.profile.ProfileScreen
 import com.example.ozinsheapp.presentation.registration.LoginScreen
 import com.example.ozinsheapp.presentation.registration.LoginViewModel
 import com.example.ozinsheapp.presentation.registration.SignUpScreen
 import com.example.ozinsheapp.presentation.registration.SignUpViewModel
-import com.example.ozinsheapp.presentation.search.SearchScreen
 import com.example.ozinsheapp.presentation.splash.SplashScreen
 
 @Composable
@@ -45,6 +44,14 @@ fun MainNavGraph(
                     navController.navigate(MainDestinations.OnBoardingScreen_route) {
                         popUpTo(MainDestinations.SPLASH_ROUTE) { inclusive = true }
                     }
+                }
+            )
+        }
+
+        composable(route = MainDestinations.MainScreen_route) {
+            MainScreen(
+                navigateToMovieDetails = { id ->
+                    navController.navigate("${MainDestinations.MovieDetailsScreen_route}/$id")
                 }
             )
         }
@@ -79,8 +86,32 @@ fun MainNavGraph(
             )
         }
 
-        composable(route = MainDestinations.MainScreen_route) {
-            MainScreen()
+        composable(route = "${MainDestinations.MovieDetailsScreen_route}/{id}") { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("id")
+            val viewModel = hiltViewModel<HomeViewModel>()
+            MovieDetailsScreen(
+                viewModel = viewModel,
+                id = id,
+                navigateSeasonInfo = { ids ->
+                    navController.navigate("${MainDestinations.SeasonInfoScreen_route}/$ids")
+                }
+            )
+        }
+        composable(route = "${MainDestinations.SeasonInfoScreen_route}/{id}") { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("id")
+            val viewModel = hiltViewModel<HomeViewModel>()
+            SeasonInfoScreen(
+                viewModel = viewModel,
+                id = id,
+                navigateToVideoPlayer = { string->
+                    navController.navigate("${MainDestinations.VideoPlayerScreen_route}/$string")
+                }
+            )
+        }
+
+        composable(route = "${MainDestinations.VideoPlayerScreen_route}/{string}"){navBackStackEntry->
+            val string = navBackStackEntry.arguments?.getString("string")
+            string?.let { VideoPlayerScreen(link = it) }
         }
     }
 }
@@ -98,6 +129,11 @@ private object MainScreens {
     const val FavouriteScreen = "FavouriteScreen"
     const val SearchScreen = "SearchScreen"
     const val ProfileScreen = "ProfileScreen"
+
+    const val MovieDetailsScreen = "MovieDetailsScreen"
+    const val SeasonInfoScreen = "SeasonInfoScreen"
+    const val VideoPlayerScreen = "VideoPlayerScreen"
+
 }
 
 object MainDestinations {
@@ -113,4 +149,8 @@ object MainDestinations {
     const val FavouriteScreen_route = MainScreens.FavouriteScreen
     const val SearchScreen_route = MainScreens.SearchScreen
     const val ProfileScreen_route = MainScreens.ProfileScreen
+
+    const val MovieDetailsScreen_route = MainScreens.MovieDetailsScreen
+    const val SeasonInfoScreen_route = MainScreens.SeasonInfoScreen
+    const val VideoPlayerScreen_route = MainScreens.VideoPlayerScreen
 }

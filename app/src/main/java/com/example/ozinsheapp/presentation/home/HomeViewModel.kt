@@ -4,15 +4,21 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ozinsheapp.data.model.Resource
 import com.example.ozinsheapp.domain.entity.home.HomeMoviesItem
 import com.example.ozinsheapp.domain.entity.home.MoviesMainItem
+import com.example.ozinsheapp.domain.entity.home.Screenshot
+import com.example.ozinsheapp.domain.entity.home.Seasons
 import com.example.ozinsheapp.domain.entity.userhistory.CategoryAge
 import com.example.ozinsheapp.domain.entity.userhistory.Genre
 import com.example.ozinsheapp.domain.entity.userhistory.Movie
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetCategoryAgeUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetGenreListUseCase
+import com.example.ozinsheapp.domain.usecase.homeUseCase.GetListScreenshotUseCase
+import com.example.ozinsheapp.domain.usecase.homeUseCase.GetMoviesByIdUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetMoviesMainUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetMoviesUseCase
+import com.example.ozinsheapp.domain.usecase.homeUseCase.GetSeasonInfoUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetUserHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +35,9 @@ class HomeViewModel @Inject constructor(
     private val getMoviesUseCase: GetMoviesUseCase,
     private val getGenreListUseCase: GetGenreListUseCase,
     private val getCategoryAgeUseCase: GetCategoryAgeUseCase,
+    private val getMoviesByIdUseCase: GetMoviesByIdUseCase,
+    private val getListScreenshotUseCase: GetListScreenshotUseCase,
+    private val getSeasonInfoUseCase: GetSeasonInfoUseCase,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
@@ -47,6 +56,15 @@ class HomeViewModel @Inject constructor(
     private val _categoryAges = MutableStateFlow<List<CategoryAge>>(emptyList())
     val categoryAges = _categoryAges.asStateFlow()
 
+    private val _movieById = MutableStateFlow<Resource<Movie>>(Resource.Unspecified)
+    val movieById = _movieById.asStateFlow()
+
+    private val _screenshot = MutableStateFlow<List<Screenshot>>(emptyList())
+    val screenshot = _screenshot.asStateFlow()
+
+    private val _seasonInfo = MutableStateFlow<Resource<Seasons>>(Resource.Unspecified)
+    val seasonInfo = _seasonInfo.asStateFlow()
+
     private val _isLoadingUserHistory = MutableStateFlow(false)
     val isLoadingUserHistory = _isLoadingUserHistory.asStateFlow()
 
@@ -61,6 +79,9 @@ class HomeViewModel @Inject constructor(
 
     private val _isLoadingCategoryAge = MutableStateFlow(false)
     val isLoadingCategoryAge = _isLoadingCategoryAge.asStateFlow()
+
+    private val _isLoadingScreenshot = MutableStateFlow(false)
+    val isLoadingScreenshot = _isLoadingScreenshot.asStateFlow()
 
     private val bearerToken = sharedPreferences.getString("accessToken", null)
 
@@ -100,14 +121,10 @@ class HomeViewModel @Inject constructor(
     private val moviesMap = mutableMapOf<String, MutableStateFlow<List<HomeMoviesItem>>>()
 
     fun getMovies(categoryName: String): StateFlow<List<HomeMoviesItem>> {
-        // Check if movies for the category already exist in the map
         if (!moviesMap.containsKey(categoryName)) {
-            // If not, create a new MutableStateFlow for this category
             moviesMap[categoryName] = MutableStateFlow(emptyList())
-            // Load movies for the category
             loadMovies(categoryName)
         }
-        // Return the StateFlow for this category
         return moviesMap.getValue(categoryName)
     }
 
@@ -143,6 +160,7 @@ class HomeViewModel @Inject constructor(
             _isLoadingGenre.value = true
         }
     }
+
     fun getCategoryAges() {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoadingCategoryAge.value = true
@@ -155,7 +173,53 @@ class HomeViewModel @Inject constructor(
                 _isLoadingCategoryAge.value = false
                 Log.d("HomeViewModel", "exception: ${e.message.toString()}")
             }
-            _isLoadingCategoryAge.value = true
+            _isLoadingCategoryAge.value = false
+        }
+    }
+
+    fun getMoviesById(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _movieById.value = Resource.Loading
+            try {
+                val result = getMoviesByIdUseCase.getMoviesById(bearerToken!!, id)
+                if (result.isSuccessful) {
+                    _movieById.value = Resource.Success(result.body())
+                } else {
+                    _movieById.value = Resource.Failure(result.errorBody().toString())
+                }
+            } catch (e: Exception) {
+                Log.d("HomeViewModel", "getMoviesById: ${e.message.toString()}")
+            }
+        }
+    }
+
+    fun getScreenShot(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _isLoadingScreenshot.value = true
+            try {
+                val result = getListScreenshotUseCase.getScreenshots(bearerToken!!, id)
+                _screenshot.value = result
+            } catch (e: Exception) {
+                _isLoadingScreenshot.value = false
+                Log.d("HomeViewModel", "getScreenShot: ${e.message.toString()}")
+            }
+            _isLoadingScreenshot.value = false
+        }
+    }
+
+    fun getSeasonInfo(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _seasonInfo.value = Resource.Loading
+            try {
+                val result = getSeasonInfoUseCase.getSeasonInfo(bearerToken!!, id)
+                if (result.isSuccessful) {
+                    _seasonInfo.value = Resource.Success(result.body())
+                } else {
+                    _seasonInfo.value = Resource.Failure(result.errorBody().toString())
+                }
+            } catch (e: Exception) {
+                Log.d("HomeViewModel", "getSeasonInfo: ${e.message.toString()}")
+            }
         }
     }
 }
