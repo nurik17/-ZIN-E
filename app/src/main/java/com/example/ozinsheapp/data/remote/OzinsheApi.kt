@@ -7,6 +7,11 @@ import com.example.ozinsheapp.domain.entity.home.MoviesMain
 import com.example.ozinsheapp.domain.entity.home.Screenshot
 import com.example.ozinsheapp.domain.entity.home.Season
 import com.example.ozinsheapp.domain.entity.home.Seasons
+import com.example.ozinsheapp.domain.entity.profile.ChangePassword
+import com.example.ozinsheapp.domain.entity.profile.ChangePasswordBody
+import com.example.ozinsheapp.domain.entity.profile.UpdateProfileBody
+import com.example.ozinsheapp.domain.entity.profile.User
+import com.example.ozinsheapp.domain.entity.profile.UserInfo
 import com.example.ozinsheapp.domain.entity.registration.RegistrationBody
 import com.example.ozinsheapp.domain.entity.registration.RegistrationResponse
 import com.example.ozinsheapp.domain.entity.userhistory.Movie
@@ -16,6 +21,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface OzinsheApi {
@@ -71,4 +77,22 @@ interface OzinsheApi {
         @Header("Authorization") token: String,
         @Path("id") id: Int
     ): Response<Seasons>
+
+    @GET("core/V1/user/profile")
+    suspend fun getUserInfo(
+        @Header("Authorization") token: String
+    ): Response<UserInfo>
+
+    @PUT("core/V1/user/profile/changePassword")
+    suspend fun changePassword(
+        @Header("Authorization") token: String,
+        @Body body: ChangePasswordBody
+    ): Response<ChangePassword>
+
+    @PUT("core/V1/user/profile/")
+    suspend fun updateProfile(
+        @Header("Authorization") token: String,
+        @Body body: UpdateProfileBody
+    ): Response<UserInfo>
+
 }

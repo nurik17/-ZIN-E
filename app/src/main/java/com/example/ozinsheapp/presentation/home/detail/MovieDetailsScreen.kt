@@ -102,7 +102,6 @@ fun MovieDetailsScreen(
                             id = id.toInt(),
                             navigateSeasonInfo = {
                                 navigateSeasonInfo(id.toInt())
-                                Log.d("MovieDetailsScreen", id)
                             }
                         )
                     }
@@ -119,13 +118,13 @@ fun SuccessState(
     item: Movie,
     id: Int,
     navigateSeasonInfo: (Int) -> Unit,
-    listScreenShots: List<Screenshot>
+    listScreenShots: List<Screenshot>,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        ImageBlock(item = item)
+        ImageBlock(item = item, id = id, navigateSeasonInfo = navigateSeasonInfo)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -153,7 +152,7 @@ fun SuccessState(
 fun ScreenshotsBlock(listScreenShots: List<Screenshot>) {
     Text(
         modifier = Modifier.padding(top = 32.dp),
-        text = "Скриншоттар",
+        text = stringResource(id = R.string.screenshots),
         fontSize = 16.sp,
         color = Grey900,
         fontFamily = Constant.font700
@@ -200,7 +199,7 @@ fun SeriesBlock(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Бөлімдер",
+            text = stringResource(id = R.string.episodes),
             fontSize = 16.sp,
             color = Grey900,
             fontFamily = Constant.font700
@@ -208,7 +207,7 @@ fun SeriesBlock(
         Spacer(modifier = Modifier.weight(1f))
         Text(
             modifier = Modifier.clickable { navigateSeasonInfo(id) },
-            text = "${item.seasonCount} сезон, ${item.seriesCount} серия", //season seria
+            text = "${item.seasonCount} ${stringResource(id = R.string.season)}, ${item.seriesCount} ${stringResource(id = R.string.series)}",
             fontSize = 12.sp,
             color = Grey400,
             fontFamily = Constant.font500
@@ -260,7 +259,7 @@ fun MovieInfoBlock(
         )
         Text(
             modifier = Modifier.padding(start = 4.dp),
-            text = "Телехикая",
+            text = item.categories[0].name,
             fontSize = 12.sp,
             color = Grey400,
             fontFamily = Constant.font500
@@ -288,7 +287,7 @@ fun MovieInfoBlock(
         modifier = Modifier
             .padding(top = 16.dp)
             .clickable { expanded = !expanded },
-        text = if (expanded) "Қыскарту" else "Толығырақ",
+        text = if (expanded)  stringResource(id = R.string.hide) else stringResource(id = R.string.show_all_text),
         fontSize = 14.sp,
         fontFamily = Constant.font500,
         color = PrimaryRed300
@@ -340,7 +339,9 @@ fun BlockWithNameOfCast(
 
 @Composable
 fun ImageBlock(
-    item: Movie
+    item: Movie,
+    id: Int,
+    navigateSeasonInfo: (Int) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -381,7 +382,9 @@ fun ImageBlock(
                 onClick = {}
             )
             Image(
-                modifier = Modifier.size(128.dp),
+                modifier = Modifier
+                    .size(128.dp)
+                    .clickable { navigateSeasonInfo(id) },
                 painter = painterResource(id = R.drawable.ic_play_video),
                 contentDescription = ""
             )

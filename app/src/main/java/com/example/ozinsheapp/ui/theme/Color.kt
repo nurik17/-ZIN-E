@@ -10,11 +10,13 @@ val Grey300 = Color(0xFFD1D5DB)
 val Grey400 = Color(0xFF9CA3AF)
 val Grey500 = Color(0xFF6B7280)
 val Grey600 = Color(0xFF4B5563)
+val Grey800 = Color(0xFF1C2431)
 val Grey900 = Color(0xFF111827)
 val PrimaryRed50 = Color(0xFFF8EEFF)
 val PrimaryRed300 = Color(0xFFB376F7)
 val PrimaryRed400 = Color(0xFF9753F0)
 val PrimaryRed500 = Color(0xFF7E2DFC)
+val PrimaryRed600 = Color(0xFF5415C6)
 val ErrorRed = Color(0xFFFF402B)
 
 

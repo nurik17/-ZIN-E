@@ -16,6 +16,12 @@ import com.example.ozinsheapp.domain.usecase.homeUseCase.GetSeasonInfoUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetSeasonInfoUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetUserHistoryUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetUserHistoryUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.profileUseCase.ChangePasswordUseCase
+import com.example.ozinsheapp.domain.usecase.profileUseCase.ChangePasswordUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.profileUseCase.GetUserInfoUseCase
+import com.example.ozinsheapp.domain.usecase.profileUseCase.GetUserInfoUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.profileUseCase.UpdateProfileBodyUseCase
+import com.example.ozinsheapp.domain.usecase.profileUseCase.UpdateProfileBodyUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.registrationUseCase.SignUpUseCase
 import com.example.ozinsheapp.domain.usecase.registrationUseCase.SignUpUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.registrationUseCase.SingInUseCase
@@ -57,5 +63,12 @@ interface UseCaseModule {
 
     @Binds
     fun provideGetSeasonInfoUseCase(impl: GetSeasonInfoUseCaseImpl): GetSeasonInfoUseCase
+    @Binds
+    fun provideGetUserInfoUseCase(impl: GetUserInfoUseCaseImpl): GetUserInfoUseCase
 
+    @Binds
+    fun provideChangePasswordUseCase(impl: ChangePasswordUseCaseImpl): ChangePasswordUseCase
+
+    @Binds
+    fun provideUpdateProfileBodyUseCase(impl: UpdateProfileBodyUseCaseImpl): UpdateProfileBodyUseCase
 }

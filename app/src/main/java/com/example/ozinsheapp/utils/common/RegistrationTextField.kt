@@ -3,7 +3,6 @@ package com.example.ozinsheapp.utils.common
 import android.annotation.SuppressLint
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,7 +52,7 @@ fun RegistrationTextField(
 
     TextField(
         value = value,
-        onValueChange = { newValue->
+        onValueChange = { newValue ->
             onValueChanged(newValue)
         },
         modifier = modifier
@@ -95,17 +94,21 @@ fun RegistrationTextField(
                 fontSize = 15.sp
             )
         },
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.White,
-            textColor = Grey900,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            focusedTextColor = Grey900,
+            unfocusedTextColor = Grey900,
             focusedLeadingIconColor = Grey400,
             unfocusedLeadingIconColor = Grey400,
             focusedTrailingIconColor = Grey400,
             unfocusedTrailingIconColor = Grey400,
-
+            focusedPlaceholderColor = Grey400,
+            unfocusedPlaceholderColor = Grey400,
         ),
+
         singleLine = true,
-        keyboardOptions = KeyboardOptions.Default.copy(
+        keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType
         ),
     )

@@ -43,7 +43,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.domain.entity.home.HomeMoviesItem
-import com.example.ozinsheapp.domain.entity.home.MoviesMain
 import com.example.ozinsheapp.domain.entity.home.MoviesMainItem
 import com.example.ozinsheapp.domain.entity.userhistory.CategoryAge
 import com.example.ozinsheapp.domain.entity.userhistory.Genre
@@ -63,7 +62,6 @@ fun HomeScreen(
 ) {
     val userHistory by viewModel.userHistory.collectAsStateWithLifecycle()
     val moviesMain by viewModel.moviesMain.collectAsStateWithLifecycle()
-    val movies by viewModel.movies.collectAsStateWithLifecycle()
     val genres by viewModel.genres.collectAsStateWithLifecycle()
     val categoryAges by viewModel.categoryAges.collectAsStateWithLifecycle()
     val isLoadingUserHistory by viewModel.isLoadingUserHistory.collectAsStateWithLifecycle()
@@ -120,14 +118,13 @@ fun HomeScreen(
                     item = item,
                     onClick = {
                         navigateToMovieDetails(item.id)
-                        Log.d("user history", item.id.toString())
                     }
                 )
             }
         }
         //movie by categories
         categoryNames.forEach { categoryName ->
-            val moviesN by viewModel.getMovies(categoryName).collectAsState()
+            val movies by viewModel.getMovies(categoryName).collectAsState()
 
             Text(
                 modifier = Modifier.padding(top = 30.dp),
@@ -137,13 +134,12 @@ fun HomeScreen(
                 color = Grey900
             )
             LazyRow(modifier = Modifier.padding(top = 30.dp)) {
-                items(items = moviesN) { movie ->
+                items(items = movies) { movie ->
                     movie.movies.forEach { item ->
                         PopularInOzinsheItem(
                             item = movie,
                             onClick = {
                                 navigateToMovieDetails(item.id)
-                                Log.d("HomeScreen", "ids : ${item.id}")
                             }
                         )
                     }
@@ -326,7 +322,7 @@ fun UserHistoryMovieItem(
         )
         Text(
             modifier = Modifier.padding(top = 4.dp),
-            text = "${item.watchCount + 1}-бөлім",
+            text = "${item.watchCount + 1}-${stringResource(id = R.string.series)}",
             fontSize = 14.sp,
             fontFamily = Constant.font400,
             color = Grey400,
@@ -343,7 +339,6 @@ fun PopularInOzinsheItem(
 ) {
 
     item.movies.forEach { movie ->
-        Log.d("PopularInOzinsheItem", "${movie.id}")
         Column(
             modifier = Modifier
                 .width(120.dp)
@@ -387,7 +382,6 @@ fun PopularInOzinsheItem(
             )
         }
     }
-
 }
 
 @Composable
@@ -448,7 +442,7 @@ fun CategoryAgeItem(
             }
         )
         Text(
-            text = "${item.name} жас",
+            text = "${item.name} ${stringResource(id = R.string.age)}",
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
             color = Color.White,

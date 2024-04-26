@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -60,7 +61,6 @@ fun SeasonInfoScreen(
             viewModel.getSeasonInfo(id.toInt())
         }
     }
-    Log.d("SeasonInfoScreen", "seasonInfo: $id")
 
     when (seasonInfo) {
         is Resource.Loading -> {
@@ -86,7 +86,6 @@ fun SeasonInfoScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuccessState(
     listSeason: List<Season>,
@@ -95,7 +94,7 @@ fun SuccessState(
 ) {
     Scaffold(
         topBar = {
-            TopBarBlock(screenName = "Бөлімдер")
+            TopBarBlock(screenName = stringResource(id = R.string.episodes))
         }
     ) { padding ->
         Column(
@@ -143,7 +142,7 @@ fun NumberSeasonItem(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "${item.number} сезон",
+            text = "${item.number} ${stringResource(id = R.string.episodes)}",
             fontSize = 12.sp,
             fontFamily = Constant.font500,
             color = Grey50
@@ -168,7 +167,7 @@ fun SeasonVideoItem(
         ) {}
         Text(
             modifier = Modifier.padding(top = 8.dp),
-            text = "${item.number} ші бөлім",
+            text = "${item.number} ${stringResource(id = R.string.series)}",
             fontSize = 14.sp,
             fontFamily = Constant.font700,
             color = Grey900
@@ -184,12 +183,14 @@ fun SeasonVideoItem(
 
 @Composable
 fun TopBarBlock(
-    screenName: String
+    screenName: String,
+    iconId: Int = 0,
+    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Icon(
@@ -203,73 +204,18 @@ fun TopBarBlock(
             fontSize = 16.sp,
             fontFamily = Constant.inter700
         )
-        Box {}
+        if(iconId !=0){
+            Icon(
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { onClick() },
+                painter = painterResource(id = iconId),
+                contentDescription = "",
+                tint = Color.Red
+            )
+        }else{
+            Box{}
+        }
     }
 }
-
-/*import android.media.browse.MediaBrowser
-import android.net.Uri
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
-import okhttp3.internal.concurrent.formatDuration
-
-@Composable
-fun VideoPlayer(
-    uri: Uri,
-    duration: Long,
-    modifier: Modifier,
-    isPaused: Boolean,
-) {
-    val context = LocalContext.current
-    val exoPlayer by remember {
-        mutableStateOf(ExoPlayer.Builder(context).build())
-    }
-
-    val mediaSource = remember(uri) {
-        MediaBrowser.MediaItem.fromUri(uri)
-    }
-
-    LaunchedEffect(mediaSource) {
-        exoPlayer.setMediaItem(mediaSource)
-        exoPlayer.prepare()
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            exoPlayer.release()
-        }
-    }
-
-    AndroidView(
-        factory = { ctx ->
-            PlayerView(ctx).apply {
-                player = exoPlayer
-                useController = false
-                formatDuration(duration)
-            }
-        },
-        modifier = modifier
-            .fillMaxSize()
-    )
-    LaunchedEffect(isPaused) {
-        if(isPaused){
-            exoPlayer.pause()
-        }else{
-            exoPlayer.play()
-        }
-    }
-
-}*/
 

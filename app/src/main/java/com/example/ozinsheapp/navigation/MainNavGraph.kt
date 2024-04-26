@@ -14,6 +14,9 @@ import com.example.ozinsheapp.presentation.home.detail.MovieDetailsScreen
 import com.example.ozinsheapp.presentation.home.detail.SeasonInfoScreen
 import com.example.ozinsheapp.presentation.home.detail.VideoPlayerScreen
 import com.example.ozinsheapp.presentation.onboarding.OnBoardingScreen
+import com.example.ozinsheapp.presentation.profile.ProfileViewModel
+import com.example.ozinsheapp.presentation.profile.detail.ChangePasswordScreen
+import com.example.ozinsheapp.presentation.profile.detail.UserInfoScreen
 import com.example.ozinsheapp.presentation.registration.LoginScreen
 import com.example.ozinsheapp.presentation.registration.LoginViewModel
 import com.example.ozinsheapp.presentation.registration.SignUpScreen
@@ -27,7 +30,7 @@ fun MainNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainDestinations.MainScreen_route,
+        startDestination = MainDestinations.SPLASH_ROUTE,
         modifier = modifier,
         enterTransition = {
             EnterTransition.None
@@ -52,6 +55,12 @@ fun MainNavGraph(
             MainScreen(
                 navigateToMovieDetails = { id ->
                     navController.navigate("${MainDestinations.MovieDetailsScreen_route}/$id")
+                },
+                navigateToUserInfoScreen = {
+                    navController.navigate(MainDestinations.UserInfoScreen_route)
+                },
+                navigateToChangePasswordScreen = {
+                    navController.navigate(MainDestinations.ChangePasswordScreen_route)
                 }
             )
         }
@@ -70,7 +79,7 @@ fun MainNavGraph(
                     navController.navigate(MainDestinations.SignUpScreen_route)
                 },
                 navigateToHome = {
-                    navController.navigate(MainDestinations.HomeScreen_route) {
+                    navController.navigate(MainDestinations.MainScreen_route) {
                         popUpTo(MainDestinations.SPLASH_ROUTE) { inclusive = true }
                     }
                 }
@@ -103,15 +112,27 @@ fun MainNavGraph(
             SeasonInfoScreen(
                 viewModel = viewModel,
                 id = id,
-                navigateToVideoPlayer = { string->
+                navigateToVideoPlayer = { string ->
                     navController.navigate("${MainDestinations.VideoPlayerScreen_route}/$string")
                 }
             )
         }
 
-        composable(route = "${MainDestinations.VideoPlayerScreen_route}/{string}"){navBackStackEntry->
+        composable(route = "${MainDestinations.VideoPlayerScreen_route}/{string}") { navBackStackEntry ->
             val string = navBackStackEntry.arguments?.getString("string")
             string?.let { VideoPlayerScreen(link = it) }
+        }
+
+        composable(route = MainDestinations.UserInfoScreen_route) {
+            val viewModel = hiltViewModel<ProfileViewModel>()
+            UserInfoScreen(viewModel = viewModel,navController = navController)
+        }
+        composable(route = MainDestinations.ChangePasswordScreen_route) {
+            val viewModel = hiltViewModel<ProfileViewModel>()
+            ChangePasswordScreen(
+                viewModel = viewModel,
+                navController = navController,
+            )
         }
     }
 }
@@ -133,6 +154,8 @@ private object MainScreens {
     const val MovieDetailsScreen = "MovieDetailsScreen"
     const val SeasonInfoScreen = "SeasonInfoScreen"
     const val VideoPlayerScreen = "VideoPlayerScreen"
+    const val UserInfoScreen = "UserInfoScreen"
+    const val ChangePasswordScreen = "ChangePasswordScreen"
 
 }
 
@@ -153,4 +176,6 @@ object MainDestinations {
     const val MovieDetailsScreen_route = MainScreens.MovieDetailsScreen
     const val SeasonInfoScreen_route = MainScreens.SeasonInfoScreen
     const val VideoPlayerScreen_route = MainScreens.VideoPlayerScreen
+    const val UserInfoScreen_route = MainScreens.UserInfoScreen
+    const val ChangePasswordScreen_route = MainScreens.ChangePasswordScreen
 }

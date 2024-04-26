@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Ozinshe.App</string>
+    <string name="hello">Привет</string>
+    <string name="enter_to_account" translatable="false">Войдите в аккаунт</string>
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="are_you_forget_password">Забыли пароль?</string>
+    <string name="dont_have_account">У вас нет аккаунта?</string>
+    <string name="follow">Регистрация</string>
+    <string name="fill_the_information">Заполните данные</string>
+    <string name="or">Или</string>
+    <string name="enter">Вход</string>
+    <string name="login_with_google">Зарегистрируйтесь с Google</string>
+    <string name="do_you_have_account">У вас есть аккаунт?</string>
+    <string name="email_already_registered">Зарегистрирован пользователь с таким email</string>
+    <string name="watch_history">Продолжайте смотреть</string>
+    <string name="popular_in_Ozinshe">ÖZINŞE–де танымал</string>
+    <string name="all">All</string>
+    <string name="choose_genre">Choose the genre</string>
+    <string name="tv_serial">Tv serial</string>
+    <string name="category_by_ages">Согласно возрасту</string>
+    <string name="add_to_saved">Добавить в избранное</string>
+    <string name="share">Поделиться</string>
+    <string name="show_all_text">Подробнее</string>
+    <string name="rejisser">Режиссер:</string>
+    <string name="producer">Продюсер:</string>
+    <string name="logout">Выйти</string>
+    <string name="logout_question">Вы хотите выйти из аккаунта?</string>
+    <string name="logout_question_confirm">Да, выйти</string>
+    <string name="no">Нет</string>
+    <string name="language">Язык</string>
+    <string name="my_profile">Мой профиль</string>
+    <string name="night_mode">Ночной режим</string>
+    <string name="notification">Уведомление</string>
+    <string name="rules">Правила и условия</string>
+    <string name="change_password">Изменить пароль</string>
+    <string name="user_data">Личные данные</string>
+    <string name="change_data">Править</string>
+    <string name="profile">Профиль</string>
+
+    <string name="your_name">Ваше имя</string>
+    <string name="phone">Телефон</string>
+    <string name="birth_date">День рождения</string>
+    <string name="change_edit">Сохранить изменение</string>
+
+    <string name="films">Полнометражные мультфильмы</string>
+    <string name="sitkoms">Ситкомы</string>
+    <string name="multiseries">Мультсериалы</string>
+    <string name="series">серия</string>
+    <string name="age">лет</string>
+    <string name="season">сезон</string>
+    <string name="your_password">Ваш пароль</string>
+    <string name="episodes">Episodes</string>
+    <string name="screenshots">Скриншоты</string>
+    <string name="hide">Скрыть</string>
+
+</resources>

@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">Ozinshe.App</string>
+    <string name="hello">Сәлем</string>
+    <string name="enter_to_account" translatable="false">Аккаунтқа кіріңіз</string>
+    <string name="email">Email</string>
+    <string name="password">Құпия сөз</string>
+    <string name="repeat_password">Құпия сөзді қайталаңыз</string>
+    <string name="are_you_forget_password">Құпия сөзді ұмыттыңыз ба?</string>
+    <string name="dont_have_account">Аккаунтыныз жоқ па?</string>
+    <string name="follow"> Тіркелу</string>
+    <string name="fill_the_information"> Деректерді толтырыңыз</string>
+    <string name="or">Немесе</string>
+    <string name="enter">Кіру</string>
+    <string name="login_with_google">Google-мен тіркеліңіз</string>
+    <string name="do_you_have_account">Сізде аккаунт бар ма?</string>
+    <string name="email_already_registered">Мұндай email-ы бар пайдаланушы тіркелген</string>
+    <string name="watch_history">Қарауды жалғастырыңыз</string>
+    <string name="popular_in_Ozinshe">ÖZINŞE–де танымал</string>
+    <string name="all">Барлығы</string>
+    <string name="choose_genre">Жанрды таңдаңыз</string>
+    <string name="tv_serial">Телехикая</string>
+    <string name="category_by_ages">Жасына сәйкес</string>
+    <string name="add_to_saved">Тізімге қосу</string>
+    <string name="share">Бөлісу</string>
+    <string name="show_all_text">Толығырақ</string>
+    <string name="rejisser">Режиссер:</string>
+    <string name="producer">Продюсер:</string>
+    <string name="logout">Шығу</string>
+    <string name="logout_question">Сіз шынымен аккаунтыныздан</string>
+    <string name="logout_question_confirm">Иә, шығу</string>
+    <string name="no">Жоқ</string>
+    <string name="language">Тіл</string>
+    <string name="my_profile">Менің профилім</string>
+    <string name="night_mode">Қараңғы режим</string>
+    <string name="notification">Хабарландырулар</string>
+    <string name="rules">Ережелер мен шарттар</string>
+    <string name="change_password">Құпия сөзді өзгерту</string>
+    <string name="user_data">Жеке деректер</string>
+    <string name="change_data">Өңдеу</string>
+    <string name="profile">Профиль</string>
+    <string name="your_name">Сіздің атыңыз</string>
+    <string name="phone">Телефон</string>
+    <string name="birth_date">Туылған күні</string>
+    <string name="change_edit">Өзгерістерді сақтау</string>
+
+    <string name="films">Толықметрлі мультфильмдер</string>
+    <string name="sitkoms">Ситкомдар</string>
+    <string name="multiseries">Мультсериалдар</string>
+    <string name="series">бөлім</string>
+    <string name="age">жас</string>
+    <string name="your_password">Сіздің құпия сөзіңіз</string>
+    <string name="episodes">Бөлімдер</string>
+    <string name="season">сезон</string>
+    <string name="screenshots">Скриншоттар</string>
+    <string name="hide">Қыскарту</string>
+</resources>

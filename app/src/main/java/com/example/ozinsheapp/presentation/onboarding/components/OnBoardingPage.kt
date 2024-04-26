@@ -80,8 +80,8 @@ fun OnBoardingPage(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 16.dp, end = 16.dp)
-                        .width(80.dp)
-                        .height(28.dp)
+                        .width(90.dp)
+                        .height(35.dp)
                         .background(Grey50, RoundedCornerShape(8.dp))
                         .clip(RoundedCornerShape(8.dp)),
                     onClick = { navigationHome() },
