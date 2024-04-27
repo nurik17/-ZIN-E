@@ -1,8 +1,14 @@
 package com.example.ozinsheapp.presentation.profile
 
 import android.app.Application
+import android.app.LocaleManager
+import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
+import android.os.LocaleList
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ozinsheapp.data.model.AppTheme
@@ -132,5 +138,14 @@ class ProfileViewModel @Inject constructor(
         editor.apply()
     }
 
+    fun changeLocales(context: Context, localeString: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java)
+                .applicationLocales = LocaleList.forLanguageTags(localeString)
+
+        } else {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeString))
+        }
+    }
 
 }

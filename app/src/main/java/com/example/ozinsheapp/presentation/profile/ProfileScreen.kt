@@ -1,13 +1,5 @@
 package com.example.ozinsheapp.presentation.profile
 
-import android.app.LocaleManager
-import android.content.Context
-import android.content.Intent
-import android.content.res.Configuration
-import android.os.Build
-import android.os.LocaleList
-import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,13 +37,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.example.ozinsheapp.MainActivity
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.data.model.AppTheme
-import com.example.ozinsheapp.di.OzinsheApplication
 import com.example.ozinsheapp.navigation.MainDestinations
 import com.example.ozinsheapp.presentation.home.detail.TopBarBlock
 import com.example.ozinsheapp.ui.theme.Grey200
@@ -64,7 +52,6 @@ import com.example.ozinsheapp.ui.theme.PrimaryRed300
 import com.example.ozinsheapp.ui.theme.PrimaryRed600
 import com.example.ozinsheapp.utils.Constant
 import com.example.ozinsheapp.utils.common.CustomButton
-import java.util.Locale
 
 @Composable
 fun ProfileScreen(
@@ -74,9 +61,7 @@ fun ProfileScreen(
     navController: NavHostController
 ) {
 
-    val userInfoState by viewModel.userInfo.collectAsStateWithLifecycle()
     val userEmail by viewModel.userEmail.collectAsStateWithLifecycle()
-
 
     SuccessStateProfile(
         navigateToUserInfoScreen = navigateToUserInfoScreen,
@@ -135,9 +120,7 @@ fun SuccessStateProfile(
                     .padding(top = 24.dp)
                     .background(Grey50)
             ) {
-                var chosenLanguage by rememberSaveable { mutableStateOf("English") }
-                val sharedPreferences = context.getSharedPreferences("language_pref", Context.MODE_PRIVATE)
-                var chosenLanguageIndex by remember { mutableStateOf(-1) }
+                var chosenLanguage by rememberSaveable { mutableStateOf("") }
                 ChooseLanguageBottomSheet(
                     visible = languageSheetOpen,
                     strings = listOf("English", "Қазақша", "Русский"),
@@ -145,21 +128,21 @@ fun SuccessStateProfile(
                     chooseCallback = { index ->
                         chosenLanguage = when (index) {
                             0 -> {
-                                changeLocales(context, "en")
+                                viewModel.changeLocales(context, "en")
                                 "English"
                             }
 
                             1 -> {
-                                changeLocales(context, "kk")
+                                viewModel.changeLocales(context, "kk")
                                 "Қазақша"
                             }  // Kazakh
                             2 -> {
-                                changeLocales(context, "ru")
+                                viewModel.changeLocales(context, "ru")
                                 "Русский"
                             }
 
                             else -> {
-                                changeLocales(context, "en")
+                                viewModel.changeLocales(context, "en")
                                 "English"
                             }
                         }
@@ -382,12 +365,3 @@ fun ProfileImageBlock(
     }
 }
 
-fun changeLocales(context: Context, localeString: String) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        context.getSystemService(LocaleManager::class.java)
-            .applicationLocales = LocaleList.forLanguageTags(localeString)
-
-    } else {
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeString))
-    }
-}

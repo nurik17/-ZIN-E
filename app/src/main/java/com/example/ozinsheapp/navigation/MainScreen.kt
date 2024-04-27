@@ -18,6 +18,7 @@ fun MainScreen(
     navigateToMovieDetails:(Int)->Unit,
     navigateToUserInfoScreen: () -> Unit,
     navigateToChangePasswordScreen: () -> Unit,
+    navigateToSeasonInfo: () -> Unit,
 ) {
     Scaffold(
         bottomBar = {
@@ -32,7 +33,8 @@ fun MainScreen(
             navController = navController,
             navigateToMovieDetails = navigateToMovieDetails,
             navigateToUserInfoScreen = navigateToUserInfoScreen,
-            navigateToChangePasswordScreen = navigateToChangePasswordScreen
+            navigateToChangePasswordScreen = navigateToChangePasswordScreen,
+            navigateToSeasonInfo = navigateToSeasonInfo
         )
     }
 }

@@ -1,5 +1,8 @@
 package com.example.ozinsheapp.domain.entity.profile
 
+import androidx.annotation.Keep
+
+@Keep
 data class UpdateProfileBody(
     val birthDate: String,
     val id: Int,

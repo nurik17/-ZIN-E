@@ -4,14 +4,18 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ozinsheapp.data.model.DefaultState
 import com.example.ozinsheapp.data.model.Resource
 import com.example.ozinsheapp.domain.entity.home.HomeMoviesItem
 import com.example.ozinsheapp.domain.entity.home.MoviesMainItem
 import com.example.ozinsheapp.domain.entity.home.Screenshot
 import com.example.ozinsheapp.domain.entity.home.Seasons
+import com.example.ozinsheapp.domain.entity.profile.AddFavouriteMovieBody
 import com.example.ozinsheapp.domain.entity.userhistory.CategoryAge
 import com.example.ozinsheapp.domain.entity.userhistory.Genre
 import com.example.ozinsheapp.domain.entity.userhistory.Movie
+import com.example.ozinsheapp.domain.usecase.favouriteUseCase.AddFavouriteUseCase
+import com.example.ozinsheapp.domain.usecase.favouriteUseCase.DeleteFromFavouriteUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetCategoryAgeUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetGenreListUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetListScreenshotUseCase
@@ -38,6 +42,8 @@ class HomeViewModel @Inject constructor(
     private val getMoviesByIdUseCase: GetMoviesByIdUseCase,
     private val getListScreenshotUseCase: GetListScreenshotUseCase,
     private val getSeasonInfoUseCase: GetSeasonInfoUseCase,
+    private val addFavouriteUseCase: AddFavouriteUseCase,
+    private val deleteFromFavouriteUseCase: DeleteFromFavouriteUseCase,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
@@ -64,6 +70,12 @@ class HomeViewModel @Inject constructor(
 
     private val _seasonInfo = MutableStateFlow<Resource<Seasons>>(Resource.Unspecified)
     val seasonInfo = _seasonInfo.asStateFlow()
+
+    private val _addFavourite = MutableStateFlow<Resource<AddFavouriteMovieBody>>(Resource.Unspecified)
+    val addFavourite = _addFavourite.asStateFlow()
+
+    private val _deleteFavourite = MutableStateFlow<Resource<Unit>>(Resource.Unspecified)
+    val deleteFavourite = _deleteFavourite.asStateFlow()
 
     private val _isLoadingUserHistory = MutableStateFlow(false)
     val isLoadingUserHistory = _isLoadingUserHistory.asStateFlow()
@@ -219,6 +231,35 @@ class HomeViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.d("HomeViewModel", "getSeasonInfo: ${e.message.toString()}")
+            }
+        }
+    }
+    fun addToFavourite(movieId: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            _addFavourite.value = Resource.Loading
+            try {
+                val result = addFavouriteUseCase.addToFavourite(bearerToken!!, movieId)
+                if (result.isSuccessful) {
+                    _addFavourite.value = Resource.Success(result.body())
+                } else {
+                    _addFavourite.value = Resource.Failure(result.errorBody().toString())
+                }
+            } catch (e: Exception) {
+                Log.d("HomeViewModel", "addToFavourite: ${e.message.toString()}")
+            }
+        }
+    }
+
+    fun deleteFromFavourite(movieId: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            _deleteFavourite.value = Resource.Loading
+            try {
+                val result = deleteFromFavouriteUseCase.deleteFromFavourite(bearerToken!!,movieId)
+                if(result.isSuccessful){
+                    _deleteFavourite.value = Resource.Success(result.body())
+                }
+            } catch (e: Exception) {
+                _deleteFavourite.value = Resource.Failure(e.message ?: "Unknown error")
             }
         }
     }

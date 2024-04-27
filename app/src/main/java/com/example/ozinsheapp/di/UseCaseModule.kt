@@ -1,5 +1,11 @@
 package com.example.ozinsheapp.di
 
+import com.example.ozinsheapp.domain.usecase.favouriteUseCase.AddFavouriteUseCase
+import com.example.ozinsheapp.domain.usecase.favouriteUseCase.AddFavouriteUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.favouriteUseCase.DeleteFromFavouriteUseCase
+import com.example.ozinsheapp.domain.usecase.favouriteUseCase.DeleteFromFavouriteUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.favouriteUseCase.GetFavouriteMovieUseCase
+import com.example.ozinsheapp.domain.usecase.favouriteUseCase.GetFavouriteMovieUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetCategoryAgeUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetCategoryAgeUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetGenreListUseCase
@@ -71,4 +77,13 @@ interface UseCaseModule {
 
     @Binds
     fun provideUpdateProfileBodyUseCase(impl: UpdateProfileBodyUseCaseImpl): UpdateProfileBodyUseCase
+
+    @Binds
+    fun provideGetFavouriteMovieUseCase(impl: GetFavouriteMovieUseCaseImpl): GetFavouriteMovieUseCase
+
+    @Binds
+    fun provideAddFavouriteUseCase(impl: AddFavouriteUseCaseImpl): AddFavouriteUseCase
+
+    @Binds
+    fun provideDeleteFromFavouriteUseCase(impl: DeleteFromFavouriteUseCaseImpl): DeleteFromFavouriteUseCase
 }

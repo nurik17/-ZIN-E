@@ -1,8 +1,10 @@
 package com.example.ozinsheapp.di
 
+import com.example.ozinsheapp.data.repositoryImpl.FavouriteRepositoryImpl
 import com.example.ozinsheapp.data.repositoryImpl.HomeRepositoryImpl
 import com.example.ozinsheapp.data.repositoryImpl.ProfileRepositoryImpl
 import com.example.ozinsheapp.data.repositoryImpl.RegistrationRepositoryImpl
+import com.example.ozinsheapp.domain.repository.FavouriteRepository
 import com.example.ozinsheapp.domain.repository.HomeRepository
 import com.example.ozinsheapp.domain.repository.ProfileRepository
 import com.example.ozinsheapp.domain.repository.RegistrationRepository
@@ -22,4 +24,7 @@ interface RepositoryModule {
 
     @Binds
     fun provideProfileRepository(impl: ProfileRepositoryImpl): ProfileRepository
+
+    @Binds
+    fun provideFavouriteRepository(impl: FavouriteRepositoryImpl): FavouriteRepository
 }

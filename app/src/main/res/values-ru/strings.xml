@@ -54,5 +54,7 @@
     <string name="episodes">Episodes</string>
     <string name="screenshots">Скриншоты</string>
     <string name="hide">Скрыть</string>
+    <string name="list">Лист</string>
+    <string name="see_movie">Қарау</string>
 
 </resources>

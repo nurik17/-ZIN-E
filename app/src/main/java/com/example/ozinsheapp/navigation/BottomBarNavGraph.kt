@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.ozinsheapp.presentation.favourite.FavouriteScreen
+import com.example.ozinsheapp.presentation.favourite.FavouriteViewModel
 import com.example.ozinsheapp.presentation.home.HomeScreen
 import com.example.ozinsheapp.presentation.home.HomeViewModel
 import com.example.ozinsheapp.presentation.profile.ProfileScreen
@@ -23,6 +24,7 @@ fun BottomBarNavGraph(
     navigateToMovieDetails: (Int) -> Unit,
     navigateToUserInfoScreen: () -> Unit,
     navigateToChangePasswordScreen: () -> Unit,
+    navigateToSeasonInfo:()->Unit
 ) {
     NavHost(
         navController = navController,
@@ -45,7 +47,11 @@ fun BottomBarNavGraph(
             )
         }
         composable(route = MainDestinations.FavouriteScreen_route) {
-            FavouriteScreen()
+            val viewModel = hiltViewModel<FavouriteViewModel>()
+            FavouriteScreen(
+                viewModel = viewModel,
+                navigateToSeasonInfo = navigateToSeasonInfo
+            )
         }
         composable(route = MainDestinations.SearchScreen_route) {
             SearchScreen()

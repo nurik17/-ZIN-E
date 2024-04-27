@@ -1,6 +1,7 @@
 package com.example.ozinsheapp.presentation.home.detail
 
 import android.util.Log
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,8 +22,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -102,7 +104,8 @@ fun MovieDetailsScreen(
                             id = id.toInt(),
                             navigateSeasonInfo = {
                                 navigateSeasonInfo(id.toInt())
-                            }
+                            },
+                            viewModel = viewModel
                         )
                     }
                 }
@@ -119,12 +122,18 @@ fun SuccessState(
     id: Int,
     navigateSeasonInfo: (Int) -> Unit,
     listScreenShots: List<Screenshot>,
+    viewModel: HomeViewModel
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        ImageBlock(item = item, id = id, navigateSeasonInfo = navigateSeasonInfo)
+        ImageBlock(
+            item = item,
+            id = id,
+            navigateSeasonInfo = navigateSeasonInfo,
+            viewModel = viewModel
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -207,7 +216,11 @@ fun SeriesBlock(
         Spacer(modifier = Modifier.weight(1f))
         Text(
             modifier = Modifier.clickable { navigateSeasonInfo(id) },
-            text = "${item.seasonCount} ${stringResource(id = R.string.season)}, ${item.seriesCount} ${stringResource(id = R.string.series)}",
+            text = "${item.seasonCount} ${stringResource(id = R.string.season)}, ${item.seriesCount} ${
+                stringResource(
+                    id = R.string.series
+                )
+            }",
             fontSize = 12.sp,
             color = Grey400,
             fontFamily = Constant.font500
@@ -265,10 +278,10 @@ fun MovieInfoBlock(
             fontFamily = Constant.font500
         )
     }
-    Divider(
+    HorizontalDivider(
+        modifier = Modifier.padding(vertical = 24.dp),
         thickness = 1.dp,
-        color = Grey300,
-        modifier = Modifier.padding(vertical = 24.dp)
+        color = Grey300
     )
 
     Box(
@@ -287,7 +300,7 @@ fun MovieInfoBlock(
         modifier = Modifier
             .padding(top = 16.dp)
             .clickable { expanded = !expanded },
-        text = if (expanded)  stringResource(id = R.string.hide) else stringResource(id = R.string.show_all_text),
+        text = if (expanded) stringResource(id = R.string.hide) else stringResource(id = R.string.show_all_text),
         fontSize = 14.sp,
         fontFamily = Constant.font500,
         color = PrimaryRed300
@@ -302,10 +315,10 @@ fun MovieInfoBlock(
         nameOfText = item.producer,
         paddingTop = 8.dp
     )
-    Divider(
+    HorizontalDivider(
+        modifier = Modifier.padding(vertical = 24.dp),
         thickness = 1.dp,
-        color = Grey300,
-        modifier = Modifier.padding(vertical = 24.dp)
+        color = Grey300
     )
 }
 
@@ -341,7 +354,8 @@ fun BlockWithNameOfCast(
 fun ImageBlock(
     item: Movie,
     id: Int,
-    navigateSeasonInfo: (Int) -> Unit
+    navigateSeasonInfo: (Int) -> Unit,
+    viewModel: HomeViewModel
 ) {
     Box(
         modifier = Modifier
@@ -371,7 +385,7 @@ fun ImageBlock(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .padding(horizontal = 50.dp)
+                .padding(horizontal = 30.dp)
                 .padding(bottom = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -379,7 +393,17 @@ fun ImageBlock(
             IconWithTextBlock(
                 icon = R.drawable.ic_saved,
                 text = stringResource(id = R.string.add_to_saved),
-                onClick = {}
+                isChecked = item.favorite,
+                onClick = { isChecked ->
+                    if (isChecked) {
+                        viewModel.addToFavourite(item.id)
+                        Log.d("ImageBlock", "addFavourite")
+                    } else {
+                        viewModel.deleteFromFavourite(item.id)
+                        Log.d("ImageBlock", "delete")
+                    }
+                    Log.d("ImageBlock", isChecked.toString())
+                }
             )
             Image(
                 modifier = Modifier
@@ -391,7 +415,6 @@ fun ImageBlock(
             IconWithTextBlock(
                 icon = R.drawable.ic_share,
                 text = stringResource(id = R.string.share),
-                onClick = {}
             )
         }
     }
@@ -401,27 +424,41 @@ fun ImageBlock(
 fun IconWithTextBlock(
     icon: Int,
     text: String,
-    onClick: () -> Unit
+    isChecked: Boolean = false,
+    onClick: (Boolean) -> Unit = {}
 ) {
+    val checkState = remember { mutableStateOf(isChecked) }
+
     Column(
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            modifier = Modifier
-                .size(24.dp)
-                .align(Alignment.CenterHorizontally)
-                .clickable { onClick() },
-            painter = painterResource(id = icon),
-            contentDescription = "",
-            tint = Color.White
-        )
+        IconToggleButton(
+            checked = checkState.value,
+            onCheckedChange = { newCheckedState ->
+                checkState.value = newCheckedState
+                onClick(newCheckedState)
+            }
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.CenterHorizontally),
+                painter = painterResource(id = icon),
+                contentDescription = "",
+                tint = if (checkState.value) {
+                    PrimaryRed300
+                } else {
+                    Color.White
+                }
+            )
+        }
         Text(
             modifier = Modifier.padding(top = 5.dp),
             text = text,
             fontSize = 12.sp,
             fontFamily = Constant.font500,
             color = Color.White,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

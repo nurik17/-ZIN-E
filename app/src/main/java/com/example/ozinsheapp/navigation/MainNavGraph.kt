@@ -30,7 +30,7 @@ fun MainNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainDestinations.SPLASH_ROUTE,
+        startDestination = MainDestinations.MainScreen_route,
         modifier = modifier,
         enterTransition = {
             EnterTransition.None
@@ -61,6 +61,9 @@ fun MainNavGraph(
                 },
                 navigateToChangePasswordScreen = {
                     navController.navigate(MainDestinations.ChangePasswordScreen_route)
+                },
+                navigateToSeasonInfo = {
+                    navController.navigate(MainDestinations.MovieDetailsScreen_route)
                 }
             )
         }

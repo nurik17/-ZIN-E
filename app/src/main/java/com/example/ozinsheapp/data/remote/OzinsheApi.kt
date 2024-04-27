@@ -7,6 +7,7 @@ import com.example.ozinsheapp.domain.entity.home.MoviesMain
 import com.example.ozinsheapp.domain.entity.home.Screenshot
 import com.example.ozinsheapp.domain.entity.home.Season
 import com.example.ozinsheapp.domain.entity.home.Seasons
+import com.example.ozinsheapp.domain.entity.profile.AddFavouriteMovieBody
 import com.example.ozinsheapp.domain.entity.profile.ChangePassword
 import com.example.ozinsheapp.domain.entity.profile.ChangePasswordBody
 import com.example.ozinsheapp.domain.entity.profile.UpdateProfileBody
@@ -18,6 +19,7 @@ import com.example.ozinsheapp.domain.entity.userhistory.Movie
 import com.example.ozinsheapp.domain.entity.userhistory.UserHistoryResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -95,4 +97,20 @@ interface OzinsheApi {
         @Body body: UpdateProfileBody
     ): Response<UserInfo>
 
+    @GET("core/V1/favorite/")
+    suspend fun getFavouriteListMovie(
+        @Header("Authorization") token: String
+    ): List<Movie>
+
+    @POST("core/V1/favorite/")
+    suspend fun addToFavourite(
+        @Header("Authorization") token: String,
+        @Body body: AddFavouriteMovieBody
+    ): Response<AddFavouriteMovieBody>
+
+    @DELETE("core/V1/favorite/")
+    suspend fun deleteFromFavourite(
+        @Header("Authorization") token: String,
+        @Body body: AddFavouriteMovieBody
+    ): Response<Unit>
 }
