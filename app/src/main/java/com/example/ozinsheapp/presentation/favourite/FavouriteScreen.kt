@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,8 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +35,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import coil.compose.SubcomposeAsyncImage
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.domain.entity.userhistory.Movie
@@ -79,7 +75,7 @@ fun FavouriteScreen(
             Spacer(modifier = Modifier.height(30.dp))
             LazyColumn() {
                 items(favouriteMovieList) { item ->
-                    FavouriteMovieItem(
+                    CardMovieItem(
                         item = item,
                         onClick = {/*
                             navigateToSeasonInfo()*/
@@ -92,7 +88,7 @@ fun FavouriteScreen(
 }
 
 @Composable
-fun FavouriteMovieItem(
+fun CardMovieItem(
     item: Movie,
     onClick: () -> Unit
 ) {

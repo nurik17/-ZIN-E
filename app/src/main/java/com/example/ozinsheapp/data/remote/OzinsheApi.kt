@@ -15,6 +15,8 @@ import com.example.ozinsheapp.domain.entity.profile.User
 import com.example.ozinsheapp.domain.entity.profile.UserInfo
 import com.example.ozinsheapp.domain.entity.registration.RegistrationBody
 import com.example.ozinsheapp.domain.entity.registration.RegistrationResponse
+import com.example.ozinsheapp.domain.entity.search.SearchList
+import com.example.ozinsheapp.domain.entity.userhistory.Genre
 import com.example.ozinsheapp.domain.entity.userhistory.Movie
 import com.example.ozinsheapp.domain.entity.userhistory.UserHistoryResponse
 import retrofit2.Response
@@ -25,6 +27,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface OzinsheApi {
     @POST("auth/V1/signin")
@@ -113,4 +116,26 @@ interface OzinsheApi {
         @Header("Authorization") token: String,
         @Body body: AddFavouriteMovieBody
     ): Response<Unit>
+
+    @GET("core/V1/movies/search")
+    suspend fun searchByName(
+        @Header("Authorization") token: String,
+        @Query("search") text: String
+    ): List<Movie>
+
+    @GET("core/V1/movies/page")
+    suspend fun searchByQuery(
+        @Header("Authorization") token: String,
+        @Query("name") name: String? = null,
+        @Query("genreId") genreId: Int? = null,
+        @Query("year") year: Int? = null,
+        @Query("categoryAgeId") categoryAgeId: Int? = null,
+        @Query("categoryId") categoryId: Int? = null,
+    ): Response<SearchList>
+
+
+    @GET("core/V1/genres")
+    suspend fun getGenres(
+        @Header("Authorization") token: String,
+    ): List<Genre>
 }

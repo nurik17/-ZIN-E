@@ -326,7 +326,7 @@ fun LoginWithBlock(
     Card(
         modifier = Modifier
             .padding(top = 16.dp)
-            .border(2.dp, Grey200, RoundedCornerShape(12.dp)),
+            .border(2.dp, Grey200),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -335,7 +335,7 @@ fun LoginWithBlock(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp, horizontal = 70.dp),
+                .padding(vertical = 20.dp, horizontal = 50.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -56,5 +56,8 @@
     <string name="hide">Скрыть</string>
     <string name="list">Лист</string>
     <string name="see_movie">Қарау</string>
+    <string name="search">Поиск</string>
+    <string name="result_of_search">Результаты поиска</string>
+    <string name="category">Санаттар\n</string>
 
 </resources>

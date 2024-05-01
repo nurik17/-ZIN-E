@@ -16,6 +16,7 @@ import com.example.ozinsheapp.presentation.home.HomeViewModel
 import com.example.ozinsheapp.presentation.profile.ProfileScreen
 import com.example.ozinsheapp.presentation.profile.ProfileViewModel
 import com.example.ozinsheapp.presentation.search.SearchScreen
+import com.example.ozinsheapp.presentation.search.SearchViewModel
 
 @Composable
 fun BottomBarNavGraph(
@@ -54,7 +55,8 @@ fun BottomBarNavGraph(
             )
         }
         composable(route = MainDestinations.SearchScreen_route) {
-            SearchScreen()
+            val viewModel = hiltViewModel<SearchViewModel>()
+            SearchScreen(viewModel = viewModel)
         }
         composable(route = MainDestinations.ProfileScreen_route) {
             val viewModel = hiltViewModel<ProfileViewModel>()

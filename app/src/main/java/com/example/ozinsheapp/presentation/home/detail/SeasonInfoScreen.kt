@@ -95,7 +95,8 @@ fun SuccessState(
     Scaffold(
         topBar = {
             TopBarBlock(screenName = stringResource(id = R.string.episodes))
-        }
+        },
+        containerColor = Color.White
     ) { padding ->
         Column(
             modifier = Modifier
@@ -185,6 +186,7 @@ fun SeasonVideoItem(
 fun TopBarBlock(
     screenName: String,
     iconId: Int = 0,
+    onBackClick :()->Unit ={},
     onClick: () -> Unit = {}
 ) {
     Row(
@@ -194,7 +196,11 @@ fun TopBarBlock(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Icon(
-            modifier = Modifier.size(16.dp),
+            modifier = Modifier
+                .size(16.dp)
+                .clickable {
+                    onBackClick()
+                },
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = ""
         )

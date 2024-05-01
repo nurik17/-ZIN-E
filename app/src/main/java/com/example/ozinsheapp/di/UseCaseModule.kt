@@ -32,58 +32,72 @@ import com.example.ozinsheapp.domain.usecase.registrationUseCase.SignUpUseCase
 import com.example.ozinsheapp.domain.usecase.registrationUseCase.SignUpUseCaseImpl
 import com.example.ozinsheapp.domain.usecase.registrationUseCase.SingInUseCase
 import com.example.ozinsheapp.domain.usecase.registrationUseCase.SingInUseCaseImpl
-import dagger.Binds
+import com.example.ozinsheapp.domain.usecase.searchUseCase.GetGenresUseCase
+import com.example.ozinsheapp.domain.usecase.searchUseCase.GetGenresUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.searchUseCase.SearchByNameUseCase
+import com.example.ozinsheapp.domain.usecase.searchUseCase.SearchByNameUseCaseImpl
+import com.example.ozinsheapp.domain.usecase.searchUseCase.SearchByQueryUseCase
+import com.example.ozinsheapp.domain.usecase.searchUseCase.SearchByQueryUseCaseImpl
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.Binds as Binds1
 
 @InstallIn(SingletonComponent::class)
 @Module
 interface UseCaseModule {
-    @Binds
+    @Binds1
     fun provideSingUseCase(impl: SingInUseCaseImpl): SingInUseCase
 
-    @Binds
+    @Binds1
     fun provideSignUpUseCase(impl: SignUpUseCaseImpl): SignUpUseCase
 
-    @Binds
+    @Binds1
     fun provideGetUserHistoryUseCase(impl: GetUserHistoryUseCaseImpl): GetUserHistoryUseCase
 
-    @Binds
+    @Binds1
     fun provideGetMoviesMainUseCase(impl: GetMoviesMainUseCaseImpl): GetMoviesMainUseCase
 
-    @Binds
+    @Binds1
     fun provideGetMoviesUseCase(impl: GetMoviesUseCaseImpl): GetMoviesUseCase
 
-    @Binds
+    @Binds1
     fun provideGetGenreListUseCase(impl: GetGenreListUseCaseImpl): GetGenreListUseCase
 
-    @Binds
+    @Binds1
     fun provideGetCategoryAgeUseCase(impl: GetCategoryAgeUseCaseImpl): GetCategoryAgeUseCase
 
-    @Binds
+    @Binds1
     fun provideGetMoviesByIdUseCase(impl: GetMoviesByIdUseCaseImpl): GetMoviesByIdUseCase
 
-    @Binds
+    @Binds1
     fun provideGetListScreenshotUseCase(impl: GetListScreenshotUseCaseImpl): GetListScreenshotUseCase
 
-    @Binds
+    @Binds1
     fun provideGetSeasonInfoUseCase(impl: GetSeasonInfoUseCaseImpl): GetSeasonInfoUseCase
-    @Binds
+    @Binds1
     fun provideGetUserInfoUseCase(impl: GetUserInfoUseCaseImpl): GetUserInfoUseCase
 
-    @Binds
+    @Binds1
     fun provideChangePasswordUseCase(impl: ChangePasswordUseCaseImpl): ChangePasswordUseCase
 
-    @Binds
+    @Binds1
     fun provideUpdateProfileBodyUseCase(impl: UpdateProfileBodyUseCaseImpl): UpdateProfileBodyUseCase
 
-    @Binds
+    @Binds1
     fun provideGetFavouriteMovieUseCase(impl: GetFavouriteMovieUseCaseImpl): GetFavouriteMovieUseCase
 
-    @Binds
+    @Binds1
     fun provideAddFavouriteUseCase(impl: AddFavouriteUseCaseImpl): AddFavouriteUseCase
 
-    @Binds
+    @Binds1
     fun provideDeleteFromFavouriteUseCase(impl: DeleteFromFavouriteUseCaseImpl): DeleteFromFavouriteUseCase
+
+    @Binds1
+    fun provideSearchByNameUseCase(impl: SearchByNameUseCaseImpl): SearchByNameUseCase
+    @Binds1
+    fun provideSearchByQueryUseCase(impl: SearchByQueryUseCaseImpl): SearchByQueryUseCase
+
+    @Binds1
+    fun provideGetGenresUseCase(impl: GetGenresUseCaseImpl): GetGenresUseCase
 }

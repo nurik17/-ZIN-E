@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -22,11 +23,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +49,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.domain.entity.home.HomeMoviesItem
+import com.example.ozinsheapp.domain.entity.home.MoviesMain
 import com.example.ozinsheapp.domain.entity.home.MoviesMainItem
 import com.example.ozinsheapp.domain.entity.userhistory.CategoryAge
 import com.example.ozinsheapp.domain.entity.userhistory.Genre
@@ -53,18 +60,24 @@ import com.example.ozinsheapp.ui.theme.Grey900
 import com.example.ozinsheapp.ui.theme.PrimaryRed500
 import com.example.ozinsheapp.utils.Constant
 import com.example.ozinsheapp.utils.common.CircularProgressBox
+import com.example.ozinsheapp.utils.common.ShimmerBox
 import java.util.Locale
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    navigateToMovieDetails:(Int)->Unit
+    navigateToMovieDetails: (Int) -> Unit
 ) {
     val userHistory by viewModel.userHistory.collectAsStateWithLifecycle()
     val moviesMain by viewModel.moviesMain.collectAsStateWithLifecycle()
     val genres by viewModel.genres.collectAsStateWithLifecycle()
     val categoryAges by viewModel.categoryAges.collectAsStateWithLifecycle()
+
     val isLoadingUserHistory by viewModel.isLoadingUserHistory.collectAsStateWithLifecycle()
+    val isLoadingMoviesMain by viewModel.isLoadingMoviesMain.collectAsStateWithLifecycle()
+    val isLoadingMovies by viewModel.isLoadingMovies.collectAsStateWithLifecycle()
+    val isLoadingGenre by viewModel.isLoadingGenre.collectAsStateWithLifecycle()
+    val isLoadingCategoryAge by viewModel.isLoadingCategoryAge.collectAsStateWithLifecycle()
 
     val categoryNames = listOf(
         "ÖZINŞE–де танымал",
@@ -75,116 +88,131 @@ fun HomeScreen(
     )
 
     LaunchedEffect(Unit) {
-        viewModel.getUserHistory()
         viewModel.getMoviesMain()
+        viewModel.getUserHistory()
         viewModel.getGenres()
         viewModel.getCategoryAges()
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(horizontal = 24.dp, vertical = 10.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        AppNameBlock()
-        Spacer(modifier = Modifier.height(30.dp))
-        //movie main item
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(moviesMain) { item ->
-                MoviesMain(
-                    item = item,
-                    onClick = {
-                        navigateToMovieDetails(item.id)
-                        Log.d("movie", item.id.toString())
-                    }
-                )
-            }
-        }
-        //user history
-        Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = stringResource(id = R.string.watch_history),
-            fontSize = 16.sp,
-            fontFamily = Constant.font700,
-            color = Grey900
-        )
-        LazyRow(
-            modifier = Modifier.padding(top = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(userHistory) { item ->
-                UserHistoryMovieItem(
-                    item = item,
-                    onClick = {
-                        navigateToMovieDetails(item.id)
-                    }
-                )
-            }
-        }
-        //movie by categories
-        categoryNames.forEach { categoryName ->
-            val movies by viewModel.getMovies(categoryName).collectAsState()
 
+    if (isLoadingUserHistory && isLoadingMoviesMain && isLoadingMovies && isLoadingGenre && isLoadingCategoryAge) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(35.dp),
+                color = PrimaryRed500
+            )
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(horizontal = 24.dp, vertical = 10.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            AppNameBlock()
+            Spacer(modifier = Modifier.height(30.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                items(moviesMain) { item ->
+                    MoviesMain(
+                        item = item,
+                        onClick = {
+                            navigateToMovieDetails(item.id)
+                            Log.d("movie", item.id.toString())
+                        },
+                        isLoading = isLoadingMoviesMain
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
             Text(
-                modifier = Modifier.padding(top = 30.dp),
-                text = categoryName,
+                text = stringResource(id = R.string.watch_history),
                 fontSize = 16.sp,
                 fontFamily = Constant.font700,
                 color = Grey900
             )
-            LazyRow(modifier = Modifier.padding(top = 30.dp)) {
-                items(items = movies) { movie ->
-                    movie.movies.forEach { item ->
-                        PopularInOzinsheItem(
-                            item = movie,
-                            onClick = {
-                                navigateToMovieDetails(item.id)
-                            }
-                        )
+            LazyRow(
+                modifier = Modifier.padding(top = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(userHistory) { item ->
+                    UserHistoryMovieItem(
+                        item = item,
+                        onClick = {
+                            navigateToMovieDetails(item.id)
+                        }
+                    )
+                }
+            }
+            //movie by categories
+            categoryNames.forEach { categoryName ->
+                val movies by viewModel.getMovies(categoryName).collectAsState()
+
+                Text(
+                    modifier = Modifier.padding(top = 30.dp),
+                    text = categoryName,
+                    fontSize = 16.sp,
+                    fontFamily = Constant.font700,
+                    color = Grey900
+                )
+                LazyRow(modifier = Modifier.padding(top = 30.dp)) {
+                    items(items = movies) { movie ->
+                        movie.movies.forEach { item ->
+                            PopularInOzinsheItem(
+                                item = movie,
+                                onClick = {
+                                    navigateToMovieDetails(item.id)
+                                }
+                            )
+                        }
                     }
                 }
             }
-        }
-        //genres
-        Text(
-            modifier = Modifier.padding(top = 30.dp),
-            text = stringResource(id = R.string.choose_genre),
-            fontSize = 16.sp,
-            fontFamily = Constant.font700,
-            color = Grey900
-        )
-        LazyRow(
-            modifier = Modifier.padding(top = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(items = genres) { item ->
-                GenresItem(
-                    item = item,
-                    onClick = {},
-                )
+            //genres
+            Text(
+                modifier = Modifier.padding(top = 30.dp),
+                text = stringResource(id = R.string.choose_genre),
+                fontSize = 16.sp,
+                fontFamily = Constant.font700,
+                color = Grey900
+            )
+            LazyRow(
+                modifier = Modifier.padding(top = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(items = genres) { item ->
+                    GenresItem(
+                        item = item,
+                        onClick = {},
+                    )
+                }
             }
-        }
-        //by ages
-        Text(
-            modifier = Modifier.padding(top = 30.dp),
-            text = stringResource(id = R.string.category_by_ages),
-            fontSize = 16.sp,
-            fontFamily = Constant.font700,
-            color = Grey900
-        )
-        LazyRow(
-            modifier = Modifier.padding(top = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(items = categoryAges) { item ->
-                CategoryAgeItem(
-                    item = item,
-                    onClick = {},
-                )
+            //by ages
+            Text(
+                modifier = Modifier.padding(top = 30.dp),
+                text = stringResource(id = R.string.category_by_ages),
+                fontSize = 16.sp,
+                fontFamily = Constant.font700,
+                color = Grey900
+            )
+            LazyRow(
+                modifier = Modifier.padding(top = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(items = categoryAges) { item ->
+                    CategoryAgeItem(
+                        item = item,
+                        onClick = {},
+                    )
+                }
             }
         }
     }
+
+
 }
 
 @Composable
@@ -211,78 +239,89 @@ fun AppNameBlock() {
 @Composable
 fun MoviesMain(
     item: MoviesMainItem,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isLoading: Boolean
 ) {
 
-    Column(
-        modifier = Modifier
-            .width(300.dp)
-            .wrapContentHeight()
-    ) {
-        Box(
+    if(isLoading){
+        ShimmerBox(
+            width = 300.dp,
+            height = 180.dp
+        )
+    }else{
+        Column(
             modifier = Modifier
                 .width(300.dp)
-                .height(200.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .clickable { onClick() }
+                .wrapContentHeight()
         ) {
-            SubcomposeAsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = item.movie.poster.link,
-                contentScale = ContentScale.Crop,
-                contentDescription = "movie main item",
-                loading = {
-                    CircularProgressBox(
-                        indicatorColor = PrimaryRed500
-                    )
-                }
-            )
-            Column(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
+                    .width(300.dp)
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .clickable { onClick() }
             ) {
-                Card(
+                SubcomposeAsyncImage(
+                    modifier = Modifier.fillMaxSize(),
+                    model = item.movie.poster.link,
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "movie main item",
+                    loading = {
+                        CircularProgressBox(
+                            indicatorColor = PrimaryRed500
+                        )
+                    }
+                )
+                Column(
                     modifier = Modifier
-                        .wrapContentWidth()
-                        .height(24.dp),
-                    shape = RoundedCornerShape(10.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = PrimaryRed500,
-                        contentColor = Color.White
-                    )
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    Text(
+                    Card(
                         modifier = Modifier
-                            .padding(vertical = 4.dp, horizontal = 8.dp),
-                        text = item.movie.movieType.lowercase(Locale.getDefault()),
-                        fontSize = 12.sp,
-                        fontFamily = Constant.font500,
-                        color = Color.White
-                    )
+                            .wrapContentWidth()
+                            .height(24.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = PrimaryRed500,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(vertical = 4.dp, horizontal = 8.dp),
+                            text = item.movie.movieType.lowercase(Locale.getDefault()),
+                            fontSize = 12.sp,
+                            fontFamily = Constant.font500,
+                            color = Color.White
+                        )
+                    }
                 }
             }
+            Text(
+                modifier = Modifier.padding(top = 16.dp),
+                text = item.movie.name,
+                fontSize = 14.sp,
+                fontFamily = Constant.font700,
+                color = Grey900
+            )
+            Text(
+                modifier = Modifier.padding(top = 8.dp),
+                text = item.movie.description,
+                fontSize = 14.sp,
+                fontFamily = Constant.font400,
+                color = Grey400,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
         }
-        Text(
-            modifier = Modifier.padding(top = 16.dp),
-            text = item.movie.name,
-            fontSize = 14.sp,
-            fontFamily = Constant.font700,
-            color = Grey900
-        )
-        Text(
-            modifier = Modifier.padding(top = 8.dp),
-            text = item.movie.description,
-            fontSize = 14.sp,
-            fontFamily = Constant.font400,
-            color = Grey400,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
+
     }
+
 }
+
 
 @Composable
 fun UserHistoryMovieItem(
@@ -417,6 +456,7 @@ fun GenresItem(
         )
     }
 }
+
 @Composable
 fun CategoryAgeItem(
     item: CategoryAge,

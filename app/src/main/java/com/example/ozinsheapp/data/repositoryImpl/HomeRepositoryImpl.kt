@@ -10,6 +10,7 @@ import com.example.ozinsheapp.domain.entity.home.Seasons
 import com.example.ozinsheapp.domain.entity.userhistory.Movie
 import com.example.ozinsheapp.domain.entity.userhistory.UserHistoryResponse
 import com.example.ozinsheapp.domain.repository.HomeRepository
+import kotlinx.coroutines.delay
 import retrofit2.Response
 import javax.inject.Inject
 

@@ -4,10 +4,12 @@ import com.example.ozinsheapp.data.repositoryImpl.FavouriteRepositoryImpl
 import com.example.ozinsheapp.data.repositoryImpl.HomeRepositoryImpl
 import com.example.ozinsheapp.data.repositoryImpl.ProfileRepositoryImpl
 import com.example.ozinsheapp.data.repositoryImpl.RegistrationRepositoryImpl
+import com.example.ozinsheapp.data.repositoryImpl.SearchRepositoryImpl
 import com.example.ozinsheapp.domain.repository.FavouriteRepository
 import com.example.ozinsheapp.domain.repository.HomeRepository
 import com.example.ozinsheapp.domain.repository.ProfileRepository
 import com.example.ozinsheapp.domain.repository.RegistrationRepository
+import com.example.ozinsheapp.domain.repository.SearchRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -27,4 +29,7 @@ interface RepositoryModule {
 
     @Binds
     fun provideFavouriteRepository(impl: FavouriteRepositoryImpl): FavouriteRepository
+
+    @Binds
+    fun provideSearchRepository(impl: SearchRepositoryImpl): SearchRepository
 }

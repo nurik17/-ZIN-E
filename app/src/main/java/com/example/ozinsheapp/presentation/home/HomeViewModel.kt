@@ -26,6 +26,7 @@ import com.example.ozinsheapp.domain.usecase.homeUseCase.GetSeasonInfoUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetUserHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -80,7 +81,7 @@ class HomeViewModel @Inject constructor(
     private val _isLoadingUserHistory = MutableStateFlow(false)
     val isLoadingUserHistory = _isLoadingUserHistory.asStateFlow()
 
-    private val _isLoadingMoviesMain = MutableStateFlow(false)
+    private val _isLoadingMoviesMain = MutableStateFlow(true)
     val isLoadingMoviesMain = _isLoadingMoviesMain.asStateFlow()
 
     private val _isLoadingMovies = MutableStateFlow(false)
@@ -110,7 +111,7 @@ class HomeViewModel @Inject constructor(
                 _isLoadingUserHistory.value = false
                 Log.d("HomeViewModel", "exception: ${e.message.toString()}")
             }
-            _isLoadingUserHistory.value = true
+            _isLoadingUserHistory.value = false
         }
     }
 
@@ -126,7 +127,7 @@ class HomeViewModel @Inject constructor(
                 _isLoadingMoviesMain.value = false
                 Log.d("HomeViewModel", "exception: ${e.message.toString()}")
             }
-            _isLoadingMoviesMain.value = true
+            _isLoadingMoviesMain.value = false
         }
     }
 
@@ -169,7 +170,7 @@ class HomeViewModel @Inject constructor(
                 _isLoadingGenre.value = false
                 Log.d("HomeViewModel", "exception: ${e.message.toString()}")
             }
-            _isLoadingGenre.value = true
+            _isLoadingGenre.value = false
         }
     }
 
