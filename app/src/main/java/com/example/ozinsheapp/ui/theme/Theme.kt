@@ -17,17 +17,48 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    background = Grey900
+    background = Grey900,
+    onBackground = Color.White,
+    onTertiary = Grey800,
+    onPrimary = Grey800,
+    inverseOnSurface = Grey500,
+    onTertiaryContainer = Grey700,
+    onSecondary = Color.White,
+    inversePrimary = Grey50,
+    secondary = Grey800,
+    scrim = Grey800,
+    surfaceContainer = Grey900,
+    surfaceDim = Grey800,
+    onPrimaryContainer = Grey700,
+
+    onSurface = BlurWhite,
+    surfaceBright = BlurWhite2,
+    surfaceContainerHigh = BlurWhite3
 )
 
 private val LightColorScheme = lightColorScheme(
-    background = Color.White
+    background = Color.White,
+    onBackground = Grey900,
+    onTertiary = Grey100,
+    onPrimary = Color.White,
+    inverseOnSurface = Grey300,
+    onTertiaryContainer = Grey100,
+    onSecondary = PrimaryRed300,
+    inversePrimary = Grey700,
+    secondary = PrimaryRed50,
+    scrim = Grey200,
+    surfaceContainer = Grey50,
+    surfaceDim = Grey300,
+    onPrimaryContainer = Grey200,
+
+    onSurface = BlurBlack,
+    surfaceBright = BlurBlack2,
+    surfaceContainerHigh = BlurBlack3
 )
 
 @Composable
 fun OzinsheAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -44,8 +75,8 @@ fun OzinsheAppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = colorScheme.background.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
         }
     }
 

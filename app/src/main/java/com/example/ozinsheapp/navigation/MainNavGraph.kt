@@ -117,7 +117,8 @@ fun MainNavGraph(
                 id = id,
                 navigateToVideoPlayer = { string ->
                     navController.navigate("${MainDestinations.VideoPlayerScreen_route}/$string")
-                }
+                },
+                navController = navController
             )
         }
 

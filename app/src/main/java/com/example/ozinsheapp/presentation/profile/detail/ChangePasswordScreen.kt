@@ -7,10 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,15 +46,14 @@ fun ChangePasswordScreen(
 
     val changePassword by viewModel.changePassword.collectAsStateWithLifecycle()
 
-    Column() {
-        SuccessStateChangePassword(
-            viewModel = viewModel,
-            changePassword = changePassword,
-            navController = navController
-        )
-    }
+    SuccessStateChangePassword(
+        viewModel = viewModel,
+        changePassword = changePassword,
+        navController = navController
+    )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuccessStateChangePassword(
     viewModel: ProfileViewModel,
@@ -63,16 +66,26 @@ fun SuccessStateChangePassword(
 
     Scaffold(
         topBar = {
-            TopBarBlock(
-                screenName = stringResource(id = R.string.user_data)
+            TopAppBar(
+                title = {
+                    TopBarBlock(
+                        screenName = stringResource(id = R.string.user_data),
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(24.dp)
-                .background(Color.White)
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
@@ -80,7 +93,7 @@ fun SuccessStateChangePassword(
                 text = "Password",
                 fontFamily = Constant.font700,
                 fontSize = 14.sp,
-                color = Grey900
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             RegistrationTextField(
@@ -111,18 +124,18 @@ fun SuccessStateChangePassword(
                 },
             )
             when (changePassword) {
-                    is Resource.Success -> {
-                        navController.popBackStack()
-                    }
-
-                    is Resource.Loading -> {
-                    }
-
-                    is Resource.Failure -> {
-                    }
-
-                    else -> Unit
+                is Resource.Success -> {
+                    navController.popBackStack()
                 }
+
+                is Resource.Loading -> {
+                }
+
+                is Resource.Failure -> {
+                }
+
+                else -> Unit
+            }
             Spacer(modifier = Modifier.weight(1f))
             CustomButton(
                 text = stringResource(id = R.string.change_edit),

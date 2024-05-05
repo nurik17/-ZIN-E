@@ -20,10 +20,16 @@ val PrimaryRed500 = Color(0xFF7E2DFC)
 val PrimaryRed600 = Color(0xFF5415C6)
 val ErrorRed = Color(0xFFFF402B)
 
+val BlurWhite = Color(0xFFFFFF)
+val BlurWhite2 = Color(0xFAFFFFFF)
+val BlurWhite3 = Color(0xFFFFFFFF)
 
 
+val BlurBlack = Color(0x111827)
+val BlurBlack2 = Color(0xFA111827)
+val BlurBlack3 = Color(0xFF111827)
 
-//black color theme
+
 
 
 

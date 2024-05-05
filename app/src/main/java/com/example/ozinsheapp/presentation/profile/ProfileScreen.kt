@@ -3,6 +3,7 @@ package com.example.ozinsheapp.presentation.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,12 +44,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.data.model.AppTheme
+import com.example.ozinsheapp.data.model.Resource
 import com.example.ozinsheapp.navigation.MainDestinations
 import com.example.ozinsheapp.presentation.home.detail.TopBarBlock
 import com.example.ozinsheapp.ui.theme.Grey200
 import com.example.ozinsheapp.ui.theme.Grey300
 import com.example.ozinsheapp.ui.theme.Grey400
-import com.example.ozinsheapp.ui.theme.Grey50
 import com.example.ozinsheapp.ui.theme.Grey900
 import com.example.ozinsheapp.ui.theme.PrimaryRed300
 import com.example.ozinsheapp.ui.theme.PrimaryRed600
@@ -61,15 +64,30 @@ fun ProfileScreen(
     navController: NavHostController
 ) {
 
-    val userEmail by viewModel.userEmail.collectAsStateWithLifecycle()
+    val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
 
-    SuccessStateProfile(
-        navigateToUserInfoScreen = navigateToUserInfoScreen,
-        navigateToChangePasswordScreen = navigateToChangePasswordScreen,
-        email = userEmail,
-        navController = navController,
-        viewModel = viewModel
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (userInfo) {
+            is Resource.Loading -> {
+
+            }
+
+            is Resource.Success -> {
+                val item = (userInfo as Resource.Success).data
+                SuccessStateProfile(
+                    navigateToUserInfoScreen = navigateToUserInfoScreen,
+                    navigateToChangePasswordScreen = navigateToChangePasswordScreen,
+                    email = item?.user?.email ?: throw IllegalStateException(),
+                    navController = navController,
+                    viewModel = viewModel
+                )
+            }
+
+            is Resource.Failure -> {}
+            else -> {}
+        }
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,12 +109,22 @@ fun SuccessStateProfile(
 
     Scaffold(
         topBar = {
-            TopBarBlock(
-                screenName = stringResource(id = R.string.profile),
-                iconId = R.drawable.ic_logout,
-                onClick = {
-                    logoutSheetOpen = true
-                }
+            TopAppBar(
+                title = {
+                    TopBarBlock(
+                        screenName = stringResource(id = R.string.profile),
+                        iconId = R.drawable.ic_logout,
+                        onBackClick = {
+                            navController.popBackStack()
+                        },
+                        onClick = {
+                            logoutSheetOpen = true
+                        }
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         }
     ) { padding ->
@@ -106,10 +134,11 @@ fun SuccessStateProfile(
                 .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
         ) {
+            Spacer(modifier = Modifier.height(40.dp))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .background(MaterialTheme.colorScheme.onPrimary),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ProfileImageBlock(email = email)
@@ -118,7 +147,7 @@ fun SuccessStateProfile(
             Column(
                 modifier = Modifier
                     .padding(top = 24.dp)
-                    .background(Grey50)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 var chosenLanguage by rememberSaveable { mutableStateOf("") }
                 ChooseLanguageBottomSheet(
@@ -158,9 +187,11 @@ fun SuccessStateProfile(
                         navigateToUserInfoScreen()
                     }
                 )
-                RowProfileItem(name = stringResource(id = R.string.change_password), onClick = {
-                    navigateToChangePasswordScreen()
-                })
+                RowProfileItem(
+                    name = stringResource(id = R.string.change_password),
+                    onClick = {
+                        navigateToChangePasswordScreen()
+                    })
                 RowProfileItem(
                     name = stringResource(id = R.string.language),
                     functionText = chosenLanguage,
@@ -177,14 +208,16 @@ fun SuccessStateProfile(
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 20.dp),
                     thickness = 1.dp,
-                    color = Grey300
+                    color = MaterialTheme.colorScheme.surfaceDim
                 )
+                isChecked2 = viewModel.restoreSwitchState().value
                 TextWithSwitch(
                     text = stringResource(id = R.string.night_mode),
                     isChecked = isChecked2,
                     onCheckedChange = {
                         isChecked2 = it
                         viewModel.changeTheme(if (isChecked2) AppTheme.NIGHT else AppTheme.DAY)
+                        viewModel.saveSwitchState(isChecked2)
                     }
                 )
             }
@@ -195,7 +228,7 @@ fun SuccessStateProfile(
                     onDismissRequest = {
                         logoutSheetOpen = false
                     },
-                    containerColor = Color.White,
+                    containerColor = MaterialTheme.colorScheme.onPrimary,
                     dragHandle = { BottomSheetDefaults.DragHandle() },
                 ) {
                     LogoutBottomSheetContent(
@@ -223,7 +256,7 @@ fun LogoutBottomSheetContent(
             text = stringResource(id = R.string.logout),
             fontSize = 24.sp,
             fontFamily = Constant.font700,
-            color = Grey900
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             modifier = Modifier.padding(top = 8.dp),
@@ -267,7 +300,7 @@ fun TextWithSwitch(
         Text(
             text = text,
             fontSize = 16.sp,
-            color = Grey900,
+            color = MaterialTheme.colorScheme.onBackground,
             fontFamily = Constant.font500
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -302,7 +335,7 @@ fun RowProfileItem(
             Text(
                 text = name,
                 fontSize = 16.sp,
-                color = Grey900,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = Constant.font500
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -324,7 +357,7 @@ fun RowProfileItem(
         HorizontalDivider(
             modifier = Modifier.padding(vertical = 20.dp),
             thickness = 1.dp,
-            color = Grey300
+            color = MaterialTheme.colorScheme.surfaceDim
         )
     }
 }
@@ -333,12 +366,14 @@ fun RowProfileItem(
 fun ProfileImageBlock(
     email: String
 ) {
-    Column() {
+    Column(
+        modifier = Modifier
+            .padding(vertical = 40.dp)
+    ) {
         Image(
             modifier = Modifier
-                .padding(top = 30.dp)
                 .align(Alignment.CenterHorizontally)
-                .size(120.dp),
+                .size(100.dp),
             painter = painterResource(id = R.drawable.image_profile),
             contentDescription = ""
         )
@@ -349,7 +384,7 @@ fun ProfileImageBlock(
             text = stringResource(id = R.string.my_profile),
             fontSize = 24.sp,
             fontFamily = Constant.font700,
-            color = Grey900,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         Text(

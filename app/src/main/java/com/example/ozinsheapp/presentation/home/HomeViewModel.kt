@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ozinsheapp.data.model.DefaultState
 import com.example.ozinsheapp.data.model.Resource
 import com.example.ozinsheapp.domain.entity.home.HomeMoviesItem
 import com.example.ozinsheapp.domain.entity.home.MoviesMainItem
@@ -26,10 +25,12 @@ import com.example.ozinsheapp.domain.usecase.homeUseCase.GetSeasonInfoUseCase
 import com.example.ozinsheapp.domain.usecase.homeUseCase.GetUserHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -104,14 +105,14 @@ class HomeViewModel @Inject constructor(
             try {
                 val result = bearerToken?.let { getUserHistoryUseCase.getUserHistory(it) }
                 if (result != null) {
-                    _userHistory.value = result
+                    _userHistory.update {
+                        result
+                    }
                 }
-                Log.d("HomeViewModel", "success")
             } catch (e: Exception) {
                 _isLoadingUserHistory.value = false
                 Log.d("HomeViewModel", "exception: ${e.message.toString()}")
             }
-            _isLoadingUserHistory.value = false
         }
     }
 
@@ -121,7 +122,9 @@ class HomeViewModel @Inject constructor(
             try {
                 val result = bearerToken?.let { getMoviesMainUseCase.getMainMovies(it) }
                 if (result != null) {
-                    _moviesMain.value = result
+                    _moviesMain.update {
+                        result
+                    }
                 }
             } catch (e: Exception) {
                 _isLoadingMoviesMain.value = false
@@ -148,7 +151,9 @@ class HomeViewModel @Inject constructor(
                 val result = bearerToken?.let { getMoviesUseCase.getMovies(it) }
                 if (result != null) {
                     val filteredMovies = result.filter { it.categoryName == categoryName }
-                    moviesMap[categoryName]?.value = filteredMovies
+                    moviesMap[categoryName]?.update {
+                        filteredMovies
+                    }
                 }
             } catch (e: Exception) {
                 Log.d("HomeViewModel", "exception: ${e.message.toString()}")
@@ -164,7 +169,9 @@ class HomeViewModel @Inject constructor(
             try {
                 val result = bearerToken?.let { getGenreListUseCase.getGenresList(it) }
                 if (result != null) {
-                    _genres.value = result
+                    _genres.update {
+                        result
+                    }
                 }
             } catch (e: Exception) {
                 _isLoadingGenre.value = false
@@ -180,7 +187,9 @@ class HomeViewModel @Inject constructor(
             try {
                 val result = bearerToken?.let { getCategoryAgeUseCase.getCategoriesAgeList(it) }
                 if (result != null) {
-                    _categoryAges.value = result
+                    _categoryAges.update {
+                        result
+                    }
                 }
             } catch (e: Exception) {
                 _isLoadingCategoryAge.value = false
@@ -262,6 +271,19 @@ class HomeViewModel @Inject constructor(
             } catch (e: Exception) {
                 _deleteFavourite.value = Resource.Failure(e.message ?: "Unknown error")
             }
+        }
+    }
+    suspend fun loadData() {
+        coroutineScope {
+            val userHistoryDeferred = async { getUserHistory() }
+            val moviesMainDeferred = async { getMoviesMain() }
+            val genresDeferred = async { getGenres() }
+            val categoryAgesDeferred = async { getCategoryAges() }
+
+            userHistoryDeferred.await()
+            moviesMainDeferred.await()
+            genresDeferred.await()
+            categoryAgesDeferred.await()
         }
     }
 }

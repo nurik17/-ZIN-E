@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -21,12 +20,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ozinsheapp.ui.theme.Grey100
 import com.example.ozinsheapp.ui.theme.Grey400
-import com.example.ozinsheapp.ui.theme.Grey900
 import com.example.ozinsheapp.utils.Constant
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileTextField(
     label: String,
@@ -49,17 +45,20 @@ fun ProfileTextField(
             .padding(top = 12.dp)
             .border(
                 width = 2.dp,
-                color = Grey100,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 shape = RoundedCornerShape(12.dp)
             ),
         shape = RoundedCornerShape(12.dp),
         textStyle = TextStyle(
             fontSize = 16.sp,
             fontFamily = Constant.font400,
-            color = Grey900
+            color = MaterialTheme.colorScheme.onBackground
         ),
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.White,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+            focusedTextColor = MaterialTheme.colorScheme.onBackground,
+            unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             focusedLabelColor = Grey400,
             unfocusedLabelColor = Grey400,
             focusedIndicatorColor = Color.Transparent,

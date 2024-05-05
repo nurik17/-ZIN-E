@@ -60,4 +60,5 @@
     <string name="search">Search</string>
     <string name="result_of_search">Result of search</string>
     <string name="category">Санаттар\n</string>
+    <string name="error_email">Қате формат</string>
 </resources>

@@ -53,14 +53,17 @@ fun ChooseLanguageBottomSheet(
         visible = visible,
         onDismiss = onDismiss
     ) { sheetState ->
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column(modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(24.dp)
+        ) {
             Text(
                 modifier = Modifier
                     .padding(top = 24.dp),
                 text = stringResource(id = R.string.language),
                 fontSize = 24.sp,
                 fontFamily = Constant.font700,
-                color = Grey900
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(32.dp))
             LazyColumn(
@@ -87,7 +90,7 @@ fun ChooseLanguageBottomSheet(
                         ) {
                             Text(
                                 text = item,
-                                color = MaterialTheme.colorScheme.onSurface,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 fontSize = 16.sp,
                                 fontFamily = Constant.font500
                             )
@@ -113,7 +116,7 @@ fun ChooseLanguageBottomSheet(
                         HorizontalDivider(
                             modifier = Modifier.padding(top = 10.dp),
                             thickness = 1.dp,
-                            color = Grey300
+                            color = MaterialTheme.colorScheme.surfaceDim
                         )
                     }
                 }

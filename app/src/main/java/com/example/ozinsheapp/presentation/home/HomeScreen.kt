@@ -1,6 +1,5 @@
 package com.example.ozinsheapp.presentation.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -23,16 +21,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,17 +43,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.domain.entity.home.HomeMoviesItem
-import com.example.ozinsheapp.domain.entity.home.MoviesMain
 import com.example.ozinsheapp.domain.entity.home.MoviesMainItem
 import com.example.ozinsheapp.domain.entity.userhistory.CategoryAge
 import com.example.ozinsheapp.domain.entity.userhistory.Genre
 import com.example.ozinsheapp.domain.entity.userhistory.Movie
-import com.example.ozinsheapp.ui.theme.Grey100
 import com.example.ozinsheapp.ui.theme.Grey400
-import com.example.ozinsheapp.ui.theme.Grey900
 import com.example.ozinsheapp.ui.theme.PrimaryRed500
 import com.example.ozinsheapp.utils.Constant
-import com.example.ozinsheapp.utils.common.CircularProgressBox
 import com.example.ozinsheapp.utils.common.ShimmerBox
 import java.util.Locale
 
@@ -88,51 +78,38 @@ fun HomeScreen(
     )
 
     LaunchedEffect(Unit) {
-        viewModel.getMoviesMain()
-        viewModel.getUserHistory()
-        viewModel.getGenres()
-        viewModel.getCategoryAges()
+        viewModel.loadData()
     }
 
-    if (isLoadingUserHistory && isLoadingMoviesMain && isLoadingMovies && isLoadingGenre && isLoadingCategoryAge) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(35.dp),
-                color = PrimaryRed500
-            )
-        }
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(horizontal = 24.dp, vertical = 10.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            AppNameBlock()
-            Spacer(modifier = Modifier.height(30.dp))
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 24.dp, vertical = 10.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Spacer(modifier = Modifier.height(30.dp))
+
+        if(!isLoadingMoviesMain && moviesMain.isNotEmpty()){
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 items(moviesMain) { item ->
                     MoviesMain(
                         item = item,
                         onClick = {
-                            navigateToMovieDetails(item.id)
-                            Log.d("movie", item.id.toString())
                         },
-                        isLoading = isLoadingMoviesMain
                     )
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(30.dp))
+        if(!isLoadingUserHistory && userHistory.isNotEmpty()){
             Text(
                 text = stringResource(id = R.string.watch_history),
                 fontSize = 16.sp,
                 fontFamily = Constant.font700,
-                color = Grey900
+                color = MaterialTheme.colorScheme.onBackground
             )
             LazyRow(
                 modifier = Modifier.padding(top = 16.dp),
@@ -147,37 +124,43 @@ fun HomeScreen(
                     )
                 }
             }
-            //movie by categories
-            categoryNames.forEach { categoryName ->
-                val movies by viewModel.getMovies(categoryName).collectAsState()
+        }
+        //movie by categories
+        categoryNames.forEach { categoryName ->
+            val movies by viewModel.getMovies(categoryName).collectAsState()
 
-                Text(
-                    modifier = Modifier.padding(top = 30.dp),
-                    text = categoryName,
-                    fontSize = 16.sp,
-                    fontFamily = Constant.font700,
-                    color = Grey900
-                )
-                LazyRow(modifier = Modifier.padding(top = 30.dp)) {
-                    items(items = movies) { movie ->
-                        movie.movies.forEach { item ->
-                            PopularInOzinsheItem(
-                                item = movie,
-                                onClick = {
-                                    navigateToMovieDetails(item.id)
-                                }
-                            )
+            if (!isLoadingMovies && movies.isNotEmpty()) {
+                Column {
+                    Text(
+                        modifier = Modifier.padding(top = 30.dp),
+                        text = categoryName,
+                        fontSize = 16.sp,
+                        fontFamily = Constant.font700,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    LazyRow(modifier = Modifier.padding(top = 8.dp)) {
+                        items(items = movies) { movie ->
+                            movie.movies.forEach { item ->
+                                PopularInOzinsheItem(
+                                    item = movie,
+                                    onClick = {
+                                        navigateToMovieDetails(item.id)
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
-            //genres
+        }
+        //genres
+        if(!isLoadingGenre && genres.isNotEmpty()){
             Text(
                 modifier = Modifier.padding(top = 30.dp),
                 text = stringResource(id = R.string.choose_genre),
                 fontSize = 16.sp,
                 fontFamily = Constant.font700,
-                color = Grey900
+                color = MaterialTheme.colorScheme.onBackground
             )
             LazyRow(
                 modifier = Modifier.padding(top = 16.dp),
@@ -190,13 +173,15 @@ fun HomeScreen(
                     )
                 }
             }
-            //by ages
+        }
+        //by ages
+        if(!isLoadingCategoryAge && categoryAges.isNotEmpty()){
             Text(
                 modifier = Modifier.padding(top = 30.dp),
                 text = stringResource(id = R.string.category_by_ages),
                 fontSize = 16.sp,
                 fontFamily = Constant.font700,
-                color = Grey900
+                color = MaterialTheme.colorScheme.onBackground
             )
             LazyRow(
                 modifier = Modifier.padding(top = 16.dp),
@@ -211,8 +196,6 @@ fun HomeScreen(
             }
         }
     }
-
-
 }
 
 @Composable
@@ -223,7 +206,7 @@ fun AppNameBlock() {
             .height(40.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Grey100
+            containerColor = MaterialTheme.colorScheme.onTertiary
         )
     ) {
         Image(
@@ -231,7 +214,7 @@ fun AppNameBlock() {
             contentDescription = "",
             modifier = Modifier
                 .padding(10.dp),
-            colorFilter = ColorFilter.tint(Color.Black)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
         )
     }
 }
@@ -240,86 +223,73 @@ fun AppNameBlock() {
 fun MoviesMain(
     item: MoviesMainItem,
     onClick: () -> Unit,
-    isLoading: Boolean
 ) {
 
-    if(isLoading){
-        ShimmerBox(
-            width = 300.dp,
-            height = 180.dp
-        )
-    }else{
-        Column(
+    Column(
+        modifier = Modifier
+            .width(300.dp)
+            .wrapContentHeight()
+    ) {
+        Box(
             modifier = Modifier
                 .width(300.dp)
-                .wrapContentHeight()
+                .height(200.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .clickable { onClick() },
         ) {
-            Box(
+            SubcomposeAsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = item.movie.poster.link,
+                contentScale = ContentScale.Crop,
+                contentDescription = "movie main item",
+                loading = {
+                    ShimmerBox()
+                }
+            )
+            Column(
                 modifier = Modifier
-                    .width(300.dp)
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .clickable { onClick() }
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
             ) {
-                SubcomposeAsyncImage(
-                    modifier = Modifier.fillMaxSize(),
-                    model = item.movie.poster.link,
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "movie main item",
-                    loading = {
-                        CircularProgressBox(
-                            indicatorColor = PrimaryRed500
-                        )
-                    }
-                )
-                Column(
+                Card(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.Start
+                        .wrapContentWidth()
+                        .height(24.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = PrimaryRed500,
+                        contentColor = Color.White
+                    )
                 ) {
-                    Card(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .height(24.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = PrimaryRed500,
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .padding(vertical = 4.dp, horizontal = 8.dp),
-                            text = item.movie.movieType.lowercase(Locale.getDefault()),
-                            fontSize = 12.sp,
-                            fontFamily = Constant.font500,
-                            color = Color.White
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.padding(4.dp),
+                        text = item.movie.movieType.lowercase(Locale.getDefault()),
+                        fontSize = 12.sp,
+                        fontFamily = Constant.font500,
+                        color = Color.White
+                    )
                 }
             }
-            Text(
-                modifier = Modifier.padding(top = 16.dp),
-                text = item.movie.name,
-                fontSize = 14.sp,
-                fontFamily = Constant.font700,
-                color = Grey900
-            )
-            Text(
-                modifier = Modifier.padding(top = 8.dp),
-                text = item.movie.description,
-                fontSize = 14.sp,
-                fontFamily = Constant.font400,
-                color = Grey400,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
         }
-
+        Text(
+            modifier = Modifier.padding(top = 16.dp),
+            text = item.movie.name,
+            fontSize = 14.sp,
+            fontFamily = Constant.font700,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+            modifier = Modifier.padding(top = 8.dp),
+            text = item.movie.description,
+            fontSize = 14.sp,
+            fontFamily = Constant.font400,
+            color = Grey400,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
-
 }
 
 
@@ -346,9 +316,7 @@ fun UserHistoryMovieItem(
                 contentScale = ContentScale.Crop,
                 contentDescription = "user history item",
                 loading = {
-                    CircularProgressBox(
-                        indicatorColor = PrimaryRed500
-                    )
+                    ShimmerBox()
                 }
             )
         }
@@ -357,7 +325,7 @@ fun UserHistoryMovieItem(
             text = item.name,
             fontSize = 14.sp,
             fontFamily = Constant.font700,
-            color = Grey900
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             modifier = Modifier.padding(top = 4.dp),
@@ -397,9 +365,7 @@ fun PopularInOzinsheItem(
                     contentScale = ContentScale.Crop,
                     contentDescription = "user history item",
                     loading = {
-                        CircularProgressBox(
-                            indicatorColor = PrimaryRed500
-                        )
+                        ShimmerBox()
                     }
                 )
             }
@@ -408,7 +374,7 @@ fun PopularInOzinsheItem(
                 text = movie.name,
                 fontSize = 14.sp,
                 fontFamily = Constant.font700,
-                color = Grey900
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 modifier = Modifier.padding(top = 4.dp),
@@ -442,9 +408,7 @@ fun GenresItem(
             contentScale = ContentScale.Crop,
             contentDescription = "user history item",
             loading = {
-                CircularProgressBox(
-                    indicatorColor = PrimaryRed500
-                )
+                ShimmerBox()
             }
         )
         Text(
@@ -476,9 +440,7 @@ fun CategoryAgeItem(
             contentScale = ContentScale.Crop,
             contentDescription = "user history item",
             loading = {
-                CircularProgressBox(
-                    indicatorColor = PrimaryRed500
-                )
+                ShimmerBox()
             }
         )
         Text(

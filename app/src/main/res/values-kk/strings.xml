@@ -58,4 +58,5 @@
     <string name="search">Іздеу</string>
     <string name="result_of_search">Іздеу нәтижелері</string>
     <string name="category">Санаттар\n</string>
+    <string name="error_email">Қате формат</string>
 </resources>

@@ -51,7 +51,8 @@ fun BottomBarNavGraph(
             val viewModel = hiltViewModel<FavouriteViewModel>()
             FavouriteScreen(
                 viewModel = viewModel,
-                navigateToSeasonInfo = navigateToSeasonInfo
+                navigateToSeasonInfo = navigateToSeasonInfo,
+                navController = navController
             )
         }
         composable(route = MainDestinations.SearchScreen_route) {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -57,12 +58,15 @@ fun SignUpScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(24.dp)
                 ) {
                     RegistrationTopBlock(
                         mainText = stringResource(id = R.string.follow),
-                        subText = stringResource(id = R.string.fill_the_information)
+                        subText = stringResource(id = R.string.fill_the_information),
+                        onClick = {
+                            navigateToLogin()
+                        }
                     )
                     TextFieldBlock(
                         email = email,

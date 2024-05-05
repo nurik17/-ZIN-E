@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.ui.theme.Grey200
 import com.example.ozinsheapp.ui.theme.Grey400
-import com.example.ozinsheapp.ui.theme.Grey900
 import com.example.ozinsheapp.ui.theme.PrimaryRed400
 import com.example.ozinsheapp.utils.Constant
 
@@ -64,17 +64,17 @@ fun SearchTextField(
             }
             .border(
                 width = 1.5.dp,
-                color = if (isFocused) PrimaryRed400 else Grey200,
+                color = if (isFocused) PrimaryRed400 else MaterialTheme.colorScheme.scrim,
                 shape = RoundedCornerShape(12.dp)
             ),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            disabledContainerColor = Color.White,
+            focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.onPrimary,
             cursorColor = PrimaryRed400,
-            focusedTextColor = Grey900,
+            focusedTextColor = MaterialTheme.colorScheme.onBackground,
             unfocusedPlaceholderColor = Grey400,
-            unfocusedTextColor = Grey900,
+            unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
@@ -82,7 +82,8 @@ fun SearchTextField(
         singleLine = true,
         textStyle = TextStyle(
             fontSize = 16.sp,
-            fontFamily = Constant.font700
+            fontFamily = Constant.font700,
+            color = MaterialTheme.colorScheme.onBackground
         ),
         trailingIcon = {
             if (text.isNotEmpty()) {

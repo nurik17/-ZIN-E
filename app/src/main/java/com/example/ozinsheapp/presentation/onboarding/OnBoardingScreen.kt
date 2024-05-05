@@ -1,6 +1,6 @@
 package com.example.ozinsheapp.presentation.onboarding
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,20 +20,19 @@ import com.example.ozinsheapp.presentation.onboarding.components.PageIndicator
 import com.example.ozinsheapp.presentation.onboarding.components.pages
 import com.example.ozinsheapp.utils.common.CustomButton
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(
     navigateToLogin: () -> Unit
 ) {
-    val pagerState = rememberPagerState(initialPage = 0) {
-        pages.size
-    }
-
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val pagerState = rememberPagerState(initialPage = 0) {
+            pages.size
+        }
         HorizontalPager(state = pagerState) { index ->
             OnBoardingPage(
                 page = pages[index],
@@ -41,10 +41,10 @@ fun OnBoardingScreen(
                 navigationHome = { navigateToLogin() }
             )
         }
+
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding(),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -55,7 +55,7 @@ fun OnBoardingScreen(
             )
         }
 
-        if(pagerState.currentPage == 2) {
+        if (pagerState.currentPage == 2) {
             CustomButton(
                 modifier = Modifier.padding(24.dp),
                 text = "Әрі қарай",

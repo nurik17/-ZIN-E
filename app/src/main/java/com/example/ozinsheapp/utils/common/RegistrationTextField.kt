@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -29,13 +29,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ozinsheapp.ui.theme.Grey200
 import com.example.ozinsheapp.ui.theme.Grey400
-import com.example.ozinsheapp.ui.theme.Grey900
 import com.example.ozinsheapp.ui.theme.PrimaryRed400
 import com.example.ozinsheapp.utils.Constant
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationTextField(
     onValueChanged: (String) -> Unit,
@@ -46,8 +43,8 @@ fun RegistrationTextField(
     showPassword: Boolean = false,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null,
+    errorState: Boolean = false,
 ) {
-    var text by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
 
     TextField(
@@ -63,15 +60,16 @@ fun RegistrationTextField(
             .padding(top = 12.dp)
             .clip(RoundedCornerShape(12.dp))
             .border(
-                width = 2.dp,
-                color = if (isFocused) PrimaryRed400 else Grey200,
+                width = 1.dp,
+                color = if (errorState) Color.Red else if (isFocused) PrimaryRed400 else MaterialTheme.colorScheme.onPrimaryContainer,
                 shape = RoundedCornerShape(12.dp)
             )
             .shadow(8.dp),
         shape = RoundedCornerShape(12.dp),
         textStyle = TextStyle(
             fontSize = 16.sp,
-            fontFamily = Constant.font400
+            fontFamily = Constant.font400,
+            color = MaterialTheme.colorScheme.onBackground
         ),
         visualTransformation = if (showPassword) {
             VisualTransformation.None
@@ -89,22 +87,25 @@ fun RegistrationTextField(
         placeholder = {
             Text(
                 text = hint,
-                color = Color.Black,
+                color = Grey400,
                 fontFamily = Constant.font400,
                 fontSize = 15.sp
             )
         },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            focusedTextColor = Grey900,
-            unfocusedTextColor = Grey900,
+            focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+            focusedTextColor = MaterialTheme.colorScheme.onBackground,
+            unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             focusedLeadingIconColor = Grey400,
             unfocusedLeadingIconColor = Grey400,
             focusedTrailingIconColor = Grey400,
             unfocusedTrailingIconColor = Grey400,
             focusedPlaceholderColor = Grey400,
             unfocusedPlaceholderColor = Grey400,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent
         ),
 
         singleLine = true,

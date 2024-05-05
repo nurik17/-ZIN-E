@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,11 +21,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -82,9 +85,6 @@ fun MovieDetailsScreen(
     }
     Log.d("MovieDetailsScreen", "id movie: ${id.toString()}")
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
         when (moviesByIdState) {
             is Resource.Loading -> {
                 CircularProgressBox()
@@ -113,7 +113,6 @@ fun MovieDetailsScreen(
 
             else -> Unit
         }
-    }
 }
 
 @Composable
@@ -127,6 +126,8 @@ fun SuccessState(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
     ) {
         ImageBlock(
             item = item,
@@ -146,8 +147,8 @@ fun SuccessState(
         ) {
             Column(
                 modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(24.dp)
-                    .verticalScroll(rememberScrollState())
             ) {
                 MovieInfoBlock(item = item)
                 SeriesBlock(item = item, id = id, navigateSeasonInfo = { navigateSeasonInfo(id) })
@@ -163,7 +164,7 @@ fun ScreenshotsBlock(listScreenShots: List<Screenshot>) {
         modifier = Modifier.padding(top = 32.dp),
         text = stringResource(id = R.string.screenshots),
         fontSize = 16.sp,
-        color = Grey900,
+        color = MaterialTheme.colorScheme.onBackground,
         fontFamily = Constant.font700
     )
     LazyRow(
@@ -210,7 +211,7 @@ fun SeriesBlock(
         Text(
             text = stringResource(id = R.string.episodes),
             fontSize = 16.sp,
-            color = Grey900,
+            color = MaterialTheme.colorScheme.onBackground,
             fontFamily = Constant.font700
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -249,6 +250,7 @@ fun MovieInfoBlock(
         text = item.name,
         fontSize = 24.sp,
         fontFamily = Constant.font700,
+        color = MaterialTheme.colorScheme.onBackground
     )
     Row(
         modifier = Modifier
@@ -281,7 +283,7 @@ fun MovieInfoBlock(
     HorizontalDivider(
         modifier = Modifier.padding(vertical = 24.dp),
         thickness = 1.dp,
-        color = Grey300
+        color = MaterialTheme.colorScheme.surfaceDim
     )
 
     Box(
@@ -302,7 +304,7 @@ fun MovieInfoBlock(
             .clickable { expanded = !expanded },
         text = if (expanded) stringResource(id = R.string.hide) else stringResource(id = R.string.show_all_text),
         fontSize = 14.sp,
-        fontFamily = Constant.font500,
+        fontFamily = Constant.font700,
         color = PrimaryRed300
     )
     BlockWithNameOfCast(
@@ -318,7 +320,7 @@ fun MovieInfoBlock(
     HorizontalDivider(
         modifier = Modifier.padding(vertical = 24.dp),
         thickness = 1.dp,
-        color = Grey300
+        color = MaterialTheme.colorScheme.surfaceDim
     )
 }
 
@@ -362,15 +364,16 @@ fun ImageBlock(
             .fillMaxWidth()
             .fillMaxHeight(0.4f)
     ) {
-        Image(
+        /*Image(
             modifier = Modifier
                 .size(24.dp)
                 .align(Alignment.TopStart),
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = "arrow back",
-        )
+        )*/
         SubcomposeAsyncImage(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .height(370.dp),
             model = item.poster.link,
             contentDescription = "",
             contentScale = ContentScale.Crop,
@@ -383,11 +386,10 @@ fun ImageBlock(
 
         Row(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .padding(horizontal = 30.dp)
-                .padding(bottom = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .padding(horizontal = 15.dp)
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 50.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconWithTextBlock(
@@ -399,19 +401,30 @@ fun ImageBlock(
                         viewModel.addToFavourite(item.id)
                         Log.d("ImageBlock", "addFavourite")
                     } else {
-                        viewModel.deleteFromFavourite(item.id)
+                        viewModel.getUserHistory()
                         Log.d("ImageBlock", "delete")
                     }
                     Log.d("ImageBlock", isChecked.toString())
                 }
             )
-            Image(
+
+            Box(
                 modifier = Modifier
-                    .size(128.dp)
+                    .size(64.dp)
+                    .background(PrimaryRed500, CircleShape)
+                    .clip(CircleShape)
                     .clickable { navigateSeasonInfo(id) },
-                painter = painterResource(id = R.drawable.ic_play_video),
-                contentDescription = ""
-            )
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 5.dp)
+                        .size(24.dp),
+                    painter = painterResource(id = R.drawable.ic_play),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
             IconWithTextBlock(
                 icon = R.drawable.ic_share,
                 text = stringResource(id = R.string.share),
@@ -430,7 +443,8 @@ fun IconWithTextBlock(
     val checkState = remember { mutableStateOf(isChecked) }
 
     Column(
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         IconToggleButton(
             checked = checkState.value,
@@ -441,8 +455,7 @@ fun IconWithTextBlock(
         ) {
             Icon(
                 modifier = Modifier
-                    .size(24.dp)
-                    .align(Alignment.CenterHorizontally),
+                    .size(24.dp),
                 painter = painterResource(id = icon),
                 contentDescription = "",
                 tint = if (checkState.value) {
@@ -453,7 +466,6 @@ fun IconWithTextBlock(
             )
         }
         Text(
-            modifier = Modifier.padding(top = 5.dp),
             text = text,
             fontSize = 12.sp,
             fontFamily = Constant.font500,

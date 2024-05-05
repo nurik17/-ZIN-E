@@ -1,6 +1,7 @@
 package com.example.ozinsheapp.presentation.registration
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +19,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -57,6 +59,8 @@ fun LoginScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isError by remember { mutableStateOf(false) } // Track error state
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (loginState) {
@@ -71,21 +75,23 @@ fun LoginScreen(
             }
 
             is Resource.Failure -> {
+                isError = true
                 viewModel.changeState()
-                Log.d("LoginScreen", "failure")
             }
 
             is Resource.Unspecified -> {
-                Log.d("LoginScreen", "unsp")
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(24.dp)
                 ) {
                     RegistrationTopBlock(
                         mainText = stringResource(id = R.string.hello),
-                        subText = stringResource(id = R.string.enter_to_account)
+                        subText = stringResource(id = R.string.enter_to_account),
+                        onClick = {
+
+                        }
                     )
 
                     TextFieldBlock(
@@ -96,7 +102,8 @@ fun LoginScreen(
                         },
                         onPasswordChanged = { newPassword ->
                             password = newPassword
-                        }
+                        },
+                        isError = isError
                     )
 
                     Text(
@@ -119,7 +126,7 @@ fun LoginScreen(
                         }
                     )
 
-                    Text(
+                  /*  Text(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 30.dp),
@@ -128,11 +135,11 @@ fun LoginScreen(
                         fontFamily = Constant.font500,
                         color = Grey400
                     )
-
-                    LoginWithBlock(
+*/
+                    /*LoginWithBlock(
                         icon = R.drawable.ic_google,
                         blockText = stringResource(id = R.string.login_with_google)
-                    )
+                    )*/
                 }
             }
         }
@@ -143,20 +150,25 @@ fun LoginScreen(
 fun RegistrationTopBlock(
     mainText: String,
     subText: String,
+    onClick:()->Unit
 ) {
     Icon(
         modifier = Modifier
             .padding(start = 8.dp)
-            .size(24.dp),
+            .size(14.dp)
+            .clickable {
+                       onClick()
+            },
         painter = painterResource(id = R.drawable.ic_back),
-        contentDescription = ""
+        contentDescription = "",
+        tint = MaterialTheme.colorScheme.onBackground
     )
     Text(
         modifier = Modifier.padding(top = 24.dp),
         text = mainText,
         fontFamily = Constant.font700,
         fontSize = 24.sp,
-        color = Grey900
+        color = MaterialTheme.colorScheme.onBackground
     )
     Text(
         modifier = Modifier.padding(top = 5.dp),
@@ -175,10 +187,12 @@ fun TextFieldBlock(
     onEmailChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     onConfirmPasswordChanged: (String) -> Unit = {},
-    includeLastTextField: Boolean = false
+    includeLastTextField: Boolean = false,
+    isError: Boolean = false
 ) {
     var showPasswordValue by remember { mutableStateOf(value = false) }
     var confirmShowPasswordValue by remember { mutableStateOf(value = false) }
+
 
     Text(
         modifier = Modifier.padding(top = 29.dp),
@@ -194,8 +208,19 @@ fun TextFieldBlock(
         value = email,
         hint = "Сіздің email",
         showPassword = true,
-        leadingIcon = R.drawable.ic_message
+        leadingIcon = R.drawable.ic_message,
+        errorState = isError
     )
+
+    if (isError) {
+        Text(
+            modifier = Modifier.padding(top = 16.dp),
+            text = stringResource(id = R.string.error_email),
+            color = Color.Red,
+            fontSize = 14.sp,
+            fontFamily = Constant.font400
+        )
+    }
 
     Text(
         modifier = Modifier.padding(top = 12.dp),
@@ -325,12 +350,12 @@ fun LoginWithBlock(
 ) {
     Card(
         modifier = Modifier
-            .padding(top = 16.dp)
-            .border(2.dp, Grey200),
-        shape = RoundedCornerShape(12.dp),
+            .padding(top = 16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(2.dp, Grey200)
     ) {
         Row(
             modifier = Modifier

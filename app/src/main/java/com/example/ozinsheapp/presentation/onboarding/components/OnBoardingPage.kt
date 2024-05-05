@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,11 +26,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ozinsheapp.data.model.AppTheme
 import com.example.ozinsheapp.ui.theme.Grey50
 import com.example.ozinsheapp.ui.theme.Grey500
 import com.example.ozinsheapp.ui.theme.Grey900
 import com.example.ozinsheapp.utils.Constant
-import com.example.ozinsheapp.utils.common.CustomButton
 
 @Composable
 fun OnBoardingPage(
@@ -41,13 +41,14 @@ fun OnBoardingPage(
     navigationHome: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .background(Color.White),
+        modifier = modifier
+            .fillMaxHeight(0.8f)
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
-                .fillMaxHeight(0.6f)
+                .fillMaxHeight(0.7f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
@@ -66,9 +67,9 @@ fun OnBoardingPage(
                     .background(
                         Brush.verticalGradient(
                             listOf(
-                                Color(0xFFFFFF),
-                                Color(0xFAFFFFFF),
-                                Color(0xFFFFFFFF)
+                                MaterialTheme.colorScheme.onSurface,
+                                MaterialTheme.colorScheme.surfaceBright,
+                                MaterialTheme.colorScheme.surfaceContainerHigh,
                             ),
                             startY = 100f,
                             endY = 600f
@@ -81,14 +82,13 @@ fun OnBoardingPage(
                         .align(Alignment.TopEnd)
                         .padding(top = 16.dp, end = 16.dp)
                         .width(90.dp)
-                        .height(35.dp)
-                        .background(Grey50, RoundedCornerShape(8.dp))
-                        .clip(RoundedCornerShape(8.dp)),
+                        .height(35.dp),
                     onClick = { navigationHome() },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Grey50,
-                        contentColor = Grey900
-                    )
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = "Өткізу",

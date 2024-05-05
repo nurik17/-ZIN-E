@@ -59,5 +59,6 @@
     <string name="search">Поиск</string>
     <string name="result_of_search">Результаты поиска</string>
     <string name="category">Санаттар\n</string>
+    <string name="error_email">Қате формат</string>
 
 </resources>

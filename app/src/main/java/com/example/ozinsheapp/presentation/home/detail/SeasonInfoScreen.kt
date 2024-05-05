@@ -19,11 +19,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,13 +39,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.data.model.Resource
 import com.example.ozinsheapp.domain.entity.home.Season
 import com.example.ozinsheapp.domain.entity.userhistory.Video
 import com.example.ozinsheapp.presentation.home.HomeViewModel
-import com.example.ozinsheapp.ui.theme.Grey300
 import com.example.ozinsheapp.ui.theme.Grey50
+import com.example.ozinsheapp.ui.theme.Grey700
 import com.example.ozinsheapp.ui.theme.Grey900
 import com.example.ozinsheapp.ui.theme.PrimaryRed400
 import com.example.ozinsheapp.utils.Constant
@@ -52,7 +56,8 @@ import com.example.ozinsheapp.utils.common.CircularProgressBox
 fun SeasonInfoScreen(
     viewModel: HomeViewModel,
     id: String?,
-    navigateToVideoPlayer: (String) -> Unit
+    navigateToVideoPlayer: (String) -> Unit,
+    navController: NavHostController
 ) {
     val seasonInfo by viewModel.seasonInfo.collectAsStateWithLifecycle()
 
@@ -73,7 +78,8 @@ fun SeasonInfoScreen(
                 SuccessState(
                     listVideo = item.seasons.flatMap { season -> season.videos },
                     listSeason = item.seasons,
-                    navigateToVideoPlayer = navigateToVideoPlayer
+                    navigateToVideoPlayer = navigateToVideoPlayer,
+                    navController = navController
                 )
             }
         }
@@ -86,26 +92,40 @@ fun SeasonInfoScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuccessState(
     listSeason: List<Season>,
     listVideo: List<Video>,
-    navigateToVideoPlayer: (String) -> Unit
+    navigateToVideoPlayer: (String) -> Unit,
+    navController: NavHostController
 ) {
     Scaffold(
         topBar = {
-            TopBarBlock(screenName = stringResource(id = R.string.episodes))
+            TopAppBar(
+                title = {
+                    TopBarBlock(
+                        screenName = stringResource(id = R.string.episodes),
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            )
         },
         containerColor = Color.White
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(24.dp)
-                .background(Color.White)
         ) {
             LazyRow(
-                modifier = Modifier.padding(top = 32.dp),
+                modifier = Modifier.padding(top = 50.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(items = listSeason) { item ->
@@ -163,7 +183,7 @@ fun SeasonVideoItem(
                 .height(180.dp)
                 .clickable { onClick() },
             colors = CardDefaults.cardColors(
-                containerColor = Grey900
+                containerColor = Grey700
             )
         ) {}
         Text(
@@ -171,12 +191,12 @@ fun SeasonVideoItem(
             text = "${item.number} ${stringResource(id = R.string.series)}",
             fontSize = 14.sp,
             fontFamily = Constant.font700,
-            color = Grey900
+            color = MaterialTheme.colorScheme.onBackground
         )
-        Divider(
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 16.dp),
             thickness = 1.dp,
-            color = Grey300,
-            modifier = Modifier.padding(vertical = 16.dp)
+            color = MaterialTheme.colorScheme.surfaceDim
         )
     }
 }
@@ -192,8 +212,9 @@ fun TopBarBlock(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             modifier = Modifier
@@ -202,11 +223,12 @@ fun TopBarBlock(
                     onBackClick()
                 },
             painter = painterResource(id = R.drawable.ic_back),
-            contentDescription = ""
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = screenName,
-            color = Grey900,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 16.sp,
             fontFamily = Constant.inter700
         )

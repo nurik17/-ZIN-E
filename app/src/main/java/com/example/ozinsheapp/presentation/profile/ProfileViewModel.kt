@@ -1,6 +1,5 @@
 package com.example.ozinsheapp.presentation.profile
 
-import android.app.Application
 import android.app.LocaleManager
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,6 +7,8 @@ import android.os.Build
 import android.os.LocaleList
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,8 +20,6 @@ import com.example.ozinsheapp.domain.entity.profile.UserInfo
 import com.example.ozinsheapp.domain.usecase.profileUseCase.ChangePasswordUseCase
 import com.example.ozinsheapp.domain.usecase.profileUseCase.GetUserInfoUseCase
 import com.example.ozinsheapp.domain.usecase.profileUseCase.UpdateProfileBodyUseCase
-import com.example.ozinsheapp.utils.ActivityLifecycleCallbacks
-import com.example.ozinsheapp.utils.setLocaleInternal
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,8 +28,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
+
+private const val SWITCH_STATE_KEY = "switch_state"
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -40,15 +40,6 @@ class ProfileViewModel @Inject constructor(
     private val updateProfileBodyUseCase: UpdateProfileBodyUseCase,
 ): ViewModel() {
 
-    fun Application.setLocale(locale: Locale) {
-        setLocaleInternal(locale)
-        registerActivityLifecycleCallbacks(ActivityLifecycleCallbacks(locale))
-        registerComponentCallbacks(com.example.ozinsheapp.utils.ApplicationCallbacks(this, locale))
-    }
-
-    fun setLocale(locale: Locale) {
-        sharedPreferences.edit().putString("locale", locale.toString()).apply()
-    }
     val theme: StateFlow<AppTheme> = OzinsheApplication.prefs.theme.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
@@ -76,6 +67,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         initializeUserInfo()
+        getUserInfo()
     }
     private fun initializeUserInfo() {
         _userEmail.value = email ?: ""
@@ -128,9 +120,6 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
-    fun changeState(){
-        _changePassword.value = Resource.Unspecified
-    }
 
     private fun saveUserInfo(email: String) {
         val editor = sharedPreferences.edit()
@@ -148,4 +137,15 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+
+    fun saveSwitchState(isChecked: Boolean) {
+        val editor= sharedPreferences.edit()
+        editor.putBoolean(SWITCH_STATE_KEY, isChecked)
+        editor.apply()
+    }
+
+    fun restoreSwitchState(): MutableState<Boolean> {
+        val isChecked = sharedPreferences.getBoolean(SWITCH_STATE_KEY, false) // По умолчанию unchecked
+        return mutableStateOf(isChecked)
+    }
 }

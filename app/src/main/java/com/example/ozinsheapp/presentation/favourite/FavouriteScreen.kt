@@ -1,6 +1,5 @@
 package com.example.ozinsheapp.presentation.favourite
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,17 +16,21 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -35,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.domain.entity.userhistory.Movie
@@ -48,10 +52,12 @@ import com.example.ozinsheapp.ui.theme.PrimaryRed500
 import com.example.ozinsheapp.utils.Constant
 import com.example.ozinsheapp.utils.common.CircularProgressBox
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavouriteScreen(
     viewModel: FavouriteViewModel,
-    navigateToSeasonInfo:()->Unit
+    navigateToSeasonInfo:()->Unit,
+    navController: NavHostController
 ) {
     val favouriteMovieList by viewModel.favouriteMovie.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
@@ -60,19 +66,28 @@ fun FavouriteScreen(
 
     Scaffold(
         topBar = {
-            TopBarBlock(
-                screenName = stringResource(id = R.string.list),
+            TopAppBar(
+                title = {
+                    TopBarBlock(
+                        screenName = stringResource(id = R.string.list),
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         }
     ) { padding ->
-        Log.d("FavouriteScreen", "$padding")
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(all = 24.dp)
                 .background(MaterialTheme.colorScheme.background)
+                .padding(all = 24.dp)
         ) {
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(50.dp))
             LazyColumn() {
                 items(favouriteMovieList) { item ->
                     CardMovieItem(
@@ -120,7 +135,7 @@ fun CardMovieItem(
                 Text(
                     text = item.name,
                     fontSize = 14.sp,
-                    color = Grey900,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = Constant.font700
                 )
                 Row(
@@ -155,7 +170,7 @@ fun CardMovieItem(
                         .padding(top = 24.dp)
                         .width(80.dp)
                         .height(26.dp)
-                        .background(PrimaryRed50, RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
                         .clickable { onClick() },
                     contentAlignment = Alignment.Center
                 ) {

@@ -22,9 +22,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,42 +45,53 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.data.model.Resource
 import com.example.ozinsheapp.domain.entity.userhistory.Genre
-import com.example.ozinsheapp.domain.entity.userhistory.Movie
 import com.example.ozinsheapp.presentation.favourite.CardMovieItem
 import com.example.ozinsheapp.presentation.home.detail.TopBarBlock
-import com.example.ozinsheapp.ui.theme.Grey100
-import com.example.ozinsheapp.ui.theme.Grey700
 import com.example.ozinsheapp.ui.theme.Grey900
-import com.example.ozinsheapp.ui.theme.PrimaryRed300
 import com.example.ozinsheapp.utils.Constant
 import com.example.ozinsheapp.utils.common.CircularProgressBox
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel
 ) {
-    val resultList by viewModel.searchByQuery.collectAsStateWithLifecycle()
+    val searchByQuery by viewModel.searchByQuery.collectAsStateWithLifecycle()
+    val searchByNameLoading by viewModel.searchByNameLoading.collectAsStateWithLifecycle()
     val searchByName by viewModel.searchByName.collectAsStateWithLifecycle()
     val genresList by viewModel.genres.collectAsStateWithLifecycle()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
 
     var searchText by remember {
         mutableStateOf("")
     }
-    var chooseShowList by remember { mutableStateOf(false) }
+    var showFlowBlock by remember {
+        mutableStateOf(true)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getGenres()
     }
 
+    var showNameList by remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(
         topBar = {
-            TopBarBlock(
-                screenName = stringResource(id = R.string.search),
-                onBackClick = {
-                    viewModel.changedUiState()
-                }
+            TopAppBar(
+                title = {
+                    TopBarBlock(
+                        screenName = stringResource(id = R.string.search),
+                        onBackClick = {
+                            showFlowBlock = true
+                            showNameList = false
+                        }
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         },
         containerColor = Color.White
@@ -84,71 +99,31 @@ fun SearchScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(24.dp)
-                .background(Color.White)
         ) {
             Spacer(modifier = Modifier.height(40.dp))
+
             SearchRow(
                 searchText = searchText,
                 onSearchTextChanged = { searchText = it },
                 onSearchClicked = {
                     viewModel.searchByName(searchText)
-                    chooseShowList = true
-                    viewModel.changedUiState()
-
+                    showFlowBlock = false
+                    showNameList = true
                 },
-                onClick = {
-                    viewModel.changedUiState()
+                onDeleteClick = {
+                    showFlowBlock = true
+                    showNameList = false
                 }
             )
-            if (uiState) {
-                when (resultList) {
-                    is Resource.Loading -> {
-                        CircularProgressBox()
-                    }
-
-                    is Resource.Success -> {
-                        val searchListByQuery = (resultList as Resource.Success).data
-                        val contentList = searchListByQuery?.content ?: emptyList()
-                        Text(
-                            modifier = Modifier.padding(top = 32.dp, bottom = 24.dp),
-                            text = stringResource(id = R.string.result_of_search),
-                            fontSize = 24.sp,
-                            fontFamily = Constant.font700,
-                            color = Grey900
-                        )
-                        LazyColumn() {
-                            if(!chooseShowList){
-                                items(contentList) { item ->
-                                    CardMovieItem(
-                                        item = item,
-                                        onClick = {}
-                                    )
-                                }
-                            }else{
-                                items(searchByName){item->
-                                    CardMovieItem(
-                                        item = item,
-                                        onClick = {}
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    is Resource.Failure -> {
-
-                    }
-
-                    else -> {}
-                }
-            } else {
+            if (showFlowBlock) {
                 Text(
                     modifier = Modifier.padding(top = 20.dp),
                     text = stringResource(id = R.string.category),
                     fontSize = 24.sp,
                     fontFamily = Constant.font700,
-                    color = Grey900
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 FlowRow(
                     modifier = Modifier.padding(top = 5.dp),
@@ -160,11 +135,59 @@ fun SearchScreen(
                         GenresItem(
                             name = item.name,
                             onClick = {
-                                chooseShowList = false
+                                showFlowBlock = false
                                 viewModel.searchByQuery(genreId = item.id)
-                                viewModel.changedUiState()
                             }
                         )
+                    }
+                }
+            } else {
+                if (searchByName.isNotEmpty() && showNameList) {
+                    if (searchByNameLoading) {
+                        CircularProgressBox()
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.padding(top = 20.dp)
+                        ) {
+                            items(searchByName) { item ->
+                                CardMovieItem(
+                                    item = item,
+                                    onClick = {}
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    when (searchByQuery) {
+                        is Resource.Loading -> {
+                            CircularProgressBox()
+                        }
+
+                        is Resource.Success -> {
+                            val searchListByQuery = (searchByQuery as Resource.Success).data
+                            val contentList = searchListByQuery?.content ?: emptyList()
+                            Text(
+                                modifier = Modifier.padding(top = 32.dp, bottom = 24.dp),
+                                text = stringResource(id = R.string.result_of_search),
+                                fontSize = 24.sp,
+                                fontFamily = Constant.font700,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            LazyColumn() {
+                                items(contentList) { item ->
+                                    CardMovieItem(
+                                        item = item,
+                                        onClick = {}
+                                    )
+                                }
+                            }
+                        }
+
+                        is Resource.Failure -> {
+                        }
+
+                        else -> {
+                        }
                     }
                 }
             }
@@ -174,72 +197,7 @@ fun SearchScreen(
 
 
 @Composable
-fun SearchRow(
-    searchText: String,
-    onSearchTextChanged: (String) -> Unit,
-    onSearchClicked: () -> Unit,
-    onClick:()->Unit
-) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        SearchTextField(
-            text = searchText,
-            onTextChanged = onSearchTextChanged,
-            modifier = Modifier.padding(end = 16.dp),
-            onClick = {
-                onClick()
-            }
-        )
-        Card(
-            modifier = Modifier
-                .size(56.dp)
-                .clickable { onSearchClicked() },
-            colors = CardDefaults.cardColors(
-                containerColor = Grey100,
-                contentColor = PrimaryRed300
-            ),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Icon(
-                modifier = Modifier
-                    .padding(18.dp)
-                    .size(20.dp),
-                painter = painterResource(id = R.drawable.ic_search2),
-                contentDescription = "",
-                tint = PrimaryRed300
-            )
-        }
-    }
-}
-
-@Composable
-fun GenresItem(
-    name: String,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .wrapContentWidth()
-            .wrapContentHeight()
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(
-            containerColor = Grey100,
-            contentColor = Grey700
-        ),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Text(
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
-            text = name,
-            fontSize = 12.sp,
-            fontFamily = Constant.font700,
-            color = Grey700
-        )
-    }
-}
-
-
-@Composable
-fun CategoriesFlowBlock(
+fun FlowRowBlock(
     genresList: List<Genre>,
     viewModel: SearchViewModel
 ) {
@@ -261,30 +219,73 @@ fun CategoriesFlowBlock(
                 name = item.name,
                 onClick = {
                     viewModel.searchByQuery(genreId = item.id)
-                    viewModel.changedUiState()
                 }
             )
         }
     }
 }
 
+
 @Composable
-fun SearchResultListBlock(
-    list: List<Movie>
+fun SearchRow(
+    searchText: String,
+    onSearchTextChanged: (String) -> Unit,
+    onSearchClicked: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
-    Text(
-        modifier = Modifier.padding(top = 32.dp, bottom = 24.dp),
-        text = stringResource(id = R.string.result_of_search),
-        fontSize = 24.sp,
-        fontFamily = Constant.font700,
-        color = Grey900
-    )
-    LazyColumn() {
-        items(list) { item ->
-            CardMovieItem(
-                item = item,
-                onClick = {}
+    Row(modifier = Modifier.fillMaxWidth()) {
+        SearchTextField(
+            text = searchText,
+            onTextChanged = onSearchTextChanged,
+            modifier = Modifier.padding(end = 16.dp),
+            onClick = {
+                onDeleteClick()
+            }
+        )
+        Card(
+            modifier = Modifier
+                .size(56.dp)
+                .clickable { onSearchClicked() },
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondary
+            ),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Icon(
+                modifier = Modifier
+                    .padding(18.dp)
+                    .size(20.dp),
+                painter = painterResource(id = R.drawable.ic_search2),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.onSecondary
             )
         }
+    }
+}
+
+@Composable
+fun GenresItem(
+    name: String,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .wrapContentWidth()
+            .wrapContentHeight()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.inversePrimary
+        ),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Text(
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+            text = name,
+            fontSize = 12.sp,
+            fontFamily = Constant.font700,
+            color = MaterialTheme.colorScheme.inversePrimary
+        )
     }
 }
