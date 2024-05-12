@@ -11,6 +11,7 @@
     <string name="fill_the_information">Заполните данные</string>
     <string name="or">Или</string>
     <string name="enter">Вход</string>
+    <string name="fill_data_correct">Заполните данные корректно</string>
     <string name="login_with_google">Зарегистрируйтесь с Google</string>
     <string name="do_you_have_account">У вас есть аккаунт?</string>
     <string name="email_already_registered">Зарегистрирован пользователь с таким email</string>

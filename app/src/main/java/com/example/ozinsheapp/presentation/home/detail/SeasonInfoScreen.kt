@@ -1,6 +1,7 @@
 package com.example.ozinsheapp.presentation.home.detail
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,12 +35,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import coil.compose.SubcomposeAsyncImage
 import com.example.ozinsheapp.R
 import com.example.ozinsheapp.data.model.Resource
 import com.example.ozinsheapp.domain.entity.home.Season
@@ -133,7 +136,7 @@ fun SuccessState(
                 }
             }
             LazyColumn(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(items = listVideo) { item ->
@@ -179,13 +182,20 @@ fun SeasonVideoItem(
     Column() {
         Card(
             modifier = Modifier
-                .width(330.dp)
+                .fillMaxWidth()
                 .height(180.dp)
                 .clickable { onClick() },
             colors = CardDefaults.cardColors(
                 containerColor = Grey700
             )
-        ) {}
+        ) {
+            SubcomposeAsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = "http://img.youtube.com/vi/${item.link}/maxresdefault.jpg",
+                contentDescription = "",
+                contentScale = ContentScale.Crop
+            )
+        }
         Text(
             modifier = Modifier.padding(top = 8.dp),
             text = "${item.number} ${stringResource(id = R.string.series)}",
@@ -206,7 +216,7 @@ fun SeasonVideoItem(
 fun TopBarBlock(
     screenName: String,
     iconId: Int = 0,
-    onBackClick :()->Unit ={},
+    onBackClick: () -> Unit = {},
     onClick: () -> Unit = {}
 ) {
     Row(
@@ -232,7 +242,7 @@ fun TopBarBlock(
             fontSize = 16.sp,
             fontFamily = Constant.inter700
         )
-        if(iconId !=0){
+        if (iconId != 0) {
             Icon(
                 modifier = Modifier
                     .size(24.dp)
@@ -241,8 +251,8 @@ fun TopBarBlock(
                 contentDescription = "",
                 tint = Color.Red
             )
-        }else{
-            Box{}
+        } else {
+            Box {}
         }
     }
 }

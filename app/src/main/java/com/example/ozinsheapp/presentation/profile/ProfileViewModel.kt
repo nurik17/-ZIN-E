@@ -3,6 +3,8 @@ package com.example.ozinsheapp.presentation.profile
 import android.app.LocaleManager
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Build
 import android.os.LocaleList
 import android.util.Log
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 private const val SWITCH_STATE_KEY = "switch_state"
@@ -131,9 +134,8 @@ class ProfileViewModel @Inject constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.getSystemService(LocaleManager::class.java)
                 .applicationLocales = LocaleList.forLanguageTags(localeString)
-
         } else {
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeString))
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Locale.forLanguageTag(localeString)))
         }
     }
 
@@ -147,5 +149,14 @@ class ProfileViewModel @Inject constructor(
     fun restoreSwitchState(): MutableState<Boolean> {
         val isChecked = sharedPreferences.getBoolean(SWITCH_STATE_KEY, false) // По умолчанию unchecked
         return mutableStateOf(isChecked)
+    }
+
+    fun setLocale(context: Context, language: String) {
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val resources: Resources = context.resources
+        val configuration: Configuration = resources.configuration
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 }

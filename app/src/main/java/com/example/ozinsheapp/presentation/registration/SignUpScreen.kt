@@ -39,7 +39,7 @@ fun SignUpScreen(
 
     var errorMessage by remember { mutableStateOf("") }
 
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
         when (singUpState) {
             is Resource.Loading -> {
                 ProgressBlock()
@@ -77,13 +77,13 @@ fun SignUpScreen(
                         onPasswordChanged = { newPassword ->
                             password = newPassword
                         },
-                        onConfirmPasswordChanged = { newValue->
+                        onConfirmPasswordChanged = { newValue ->
                             confirmPassword = newValue
                         },
                         confirmPassword = confirmPassword,
                         includeLastTextField = true
                     )
-                    if(errorMessage.isNotEmpty() && errorMessage == "Error: Email is already in use!"){
+                    if (errorMessage.isNotEmpty() && errorMessage == "Error: Email is already in use!") {
                         Text(
                             text = stringResource(id = R.string.email_already_registered),
                             textAlign = TextAlign.Center,
@@ -101,7 +101,11 @@ fun SignUpScreen(
                         annotatedString = stringResource(id = R.string.follow),
                         subText = stringResource(id = R.string.do_you_have_account),
                         onClickAction = {
-                            viewModel.signUp(email, password)
+                            if (email.isEmpty() || password.isEmpty()) {
+                                errorMessage = "Fill all data correct"
+                            } else {
+                                viewModel.signUp(email, password)
+                            }
                         }
                     )
                 }

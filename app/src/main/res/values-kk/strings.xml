@@ -11,6 +11,7 @@
     <string name="fill_the_information"> Деректерді толтырыңыз</string>
     <string name="or">Немесе</string>
     <string name="enter">Кіру</string>
+    <string name="fill_data_correct">Ақпаратты дұрыс толтырыңыз</string>
     <string name="login_with_google">Google-мен тіркеліңіз</string>
     <string name="do_you_have_account">Сізде аккаунт бар ма?</string>
     <string name="email_already_registered">Мұндай email-ы бар пайдаланушы тіркелген</string>

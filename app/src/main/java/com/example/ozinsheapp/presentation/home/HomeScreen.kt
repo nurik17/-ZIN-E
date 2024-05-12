@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -86,12 +88,12 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 24.dp, vertical = 10.dp)
+            .padding(start = 24.dp, end = 24.dp, top = 10.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
-
-        if(!isLoadingMoviesMain && moviesMain.isNotEmpty()){
+        AppNameBlock()
+        Spacer(modifier = Modifier.height(20.dp))
+        if (!isLoadingMoviesMain && moviesMain.isNotEmpty()) {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 items(moviesMain) { item ->
                     MoviesMain(
@@ -104,7 +106,7 @@ fun HomeScreen(
         }
 
         Spacer(modifier = Modifier.height(30.dp))
-        if(!isLoadingUserHistory && userHistory.isNotEmpty()){
+        if (!isLoadingUserHistory && userHistory.isNotEmpty()) {
             Text(
                 text = stringResource(id = R.string.watch_history),
                 fontSize = 16.sp,
@@ -154,7 +156,7 @@ fun HomeScreen(
             }
         }
         //genres
-        if(!isLoadingGenre && genres.isNotEmpty()){
+        if (!isLoadingGenre && genres.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(top = 30.dp),
                 text = stringResource(id = R.string.choose_genre),
@@ -175,7 +177,7 @@ fun HomeScreen(
             }
         }
         //by ages
-        if(!isLoadingCategoryAge && categoryAges.isNotEmpty()){
+        if (!isLoadingCategoryAge && categoryAges.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(top = 30.dp),
                 text = stringResource(id = R.string.category_by_ages),
@@ -209,13 +211,22 @@ fun AppNameBlock() {
             containerColor = MaterialTheme.colorScheme.onTertiary
         )
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.img_app_name),
-            contentDescription = "",
-            modifier = Modifier
-                .padding(10.dp),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
-        )
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo1),
+                contentDescription = "",
+            )
+            Image(
+                modifier = Modifier.padding(start = 2.dp),
+                painter = painterResource(id = R.drawable.logo2),
+                contentDescription = "",
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+            )
+        }
     }
 }
 

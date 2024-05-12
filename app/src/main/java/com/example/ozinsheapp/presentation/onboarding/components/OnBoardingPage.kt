@@ -67,9 +67,9 @@ fun OnBoardingPage(
                     .background(
                         Brush.verticalGradient(
                             listOf(
-                                MaterialTheme.colorScheme.onSurface,
-                                MaterialTheme.colorScheme.surfaceBright,
-                                MaterialTheme.colorScheme.surfaceContainerHigh,
+                                Color(0xFFFFFF),
+                                Color(0xFAFFFFFF),
+                                Color(0xFFFFFFFF)
                             ),
                             startY = 100f,
                             endY = 600f

@@ -1,8 +1,11 @@
 package com.example.ozinsheapp.presentation.profile
 
+import android.content.res.Resources
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +32,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,13 +52,14 @@ import com.example.ozinsheapp.data.model.Resource
 import com.example.ozinsheapp.navigation.MainDestinations
 import com.example.ozinsheapp.presentation.home.detail.TopBarBlock
 import com.example.ozinsheapp.ui.theme.Grey200
-import com.example.ozinsheapp.ui.theme.Grey300
 import com.example.ozinsheapp.ui.theme.Grey400
-import com.example.ozinsheapp.ui.theme.Grey900
 import com.example.ozinsheapp.ui.theme.PrimaryRed300
 import com.example.ozinsheapp.ui.theme.PrimaryRed600
 import com.example.ozinsheapp.utils.Constant
 import com.example.ozinsheapp.utils.common.CustomButton
+import com.example.ozinsheapp.utils.common.clickableWithoutRipple
+import com.yariksoffice.lingver.Lingver
+import java.util.Locale
 
 @Composable
 fun ProfileScreen(
@@ -65,6 +70,7 @@ fun ProfileScreen(
 ) {
 
     val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
+    val interactionSource = remember { MutableInteractionSource() }
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (userInfo) {
@@ -99,6 +105,7 @@ fun SuccessStateProfile(
     email: String,
     navController: NavHostController
 ) {
+    val context = LocalContext.current
 
     var isChecked by rememberSaveable { mutableStateOf(false) }
     var isChecked2 by rememberSaveable { mutableStateOf(false) }
@@ -143,13 +150,16 @@ fun SuccessStateProfile(
             ) {
                 ProfileImageBlock(email = email)
             }
-            val context = LocalContext.current
             Column(
                 modifier = Modifier
                     .padding(top = 24.dp)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 var chosenLanguage by rememberSaveable { mutableStateOf("") }
+                val systemLocale: Locale = Resources.getSystem().configuration.locale
+                val defaultLanguage = systemLocale.displayLanguage
+                Log.d("SuccessStateProfile", defaultLanguage)
+
                 ChooseLanguageBottomSheet(
                     visible = languageSheetOpen,
                     strings = listOf("English", "Қазақша", "Русский"),
@@ -157,22 +167,22 @@ fun SuccessStateProfile(
                     chooseCallback = { index ->
                         chosenLanguage = when (index) {
                             0 -> {
-                                viewModel.changeLocales(context, "en")
+                                viewModel.setLocale(context,"en")
                                 "English"
                             }
-
                             1 -> {
-                                viewModel.changeLocales(context, "kk")
+                                viewModel.setLocale(context,"kk")
                                 "Қазақша"
-                            }  // Kazakh
+                            }
                             2 -> {
-                                viewModel.changeLocales(context, "ru")
+                                viewModel.setLocale(context,"ru")
                                 "Русский"
                             }
-
                             else -> {
-                                viewModel.changeLocales(context, "en")
-                                "English"
+                                val languageCode = systemLocale.language
+                                Log.d("SuccessStateProfile", languageCode)
+                                viewModel.setLocale(context, languageCode)
+                                defaultLanguage
                             }
                         }
                     }
@@ -324,12 +334,19 @@ fun RowProfileItem(
     functionText: String = "",
     onClick: () -> Unit = {}
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
-                .clickable { onClick() },
+                .clickableWithoutRipple(
+                    interactionSource = interactionSource,
+                    onClick = {
+                        onClick()
+                    }
+                ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(

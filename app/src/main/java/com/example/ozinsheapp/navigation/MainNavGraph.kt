@@ -30,7 +30,7 @@ fun MainNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainDestinations.MainScreen_route,
+        startDestination = MainDestinations.SPLASH_ROUTE,
         modifier = modifier,
         enterTransition = {
             EnterTransition.None

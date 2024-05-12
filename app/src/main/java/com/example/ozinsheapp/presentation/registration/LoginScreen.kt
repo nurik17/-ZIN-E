@@ -300,7 +300,8 @@ fun ButtonWithSubTextBlock(
     navigation: () -> Unit,
     annotatedString: String,
     subText: String,
-    onClickAction: () -> Unit
+    onClickAction: () -> Unit,
+    errorMessage: String = ""
 ) {
     Column() {
         CustomButton(

@@ -13,6 +13,7 @@
     <string name="enter">Login</string>
     <string name="login_with_google">Register with Google</string>
     <string name="do_you_have_account">Do you have an account?</string>
+    <string name="fill_data_correct">Fill all data correct</string>
     <string name="email_already_registered">A user with such an email is registered</string>
     <string name="watch_history">Keep watching</string>
     <string name="popular_in_Ozinshe">Popular in ÖZINŞE</string>

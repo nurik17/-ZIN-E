@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 fun VideoPlayerScreen(
     link: String
 ){
-
     Box(
         modifier = Modifier
             .fillMaxSize()
