@@ -6,11 +6,11 @@ On the OZINŞE service, every user between the ages of 9 and 16 with different t
 
 |       |       |       |
 | :---: | :---: | :---: |
-| ![Image 1](ozinshe1.png) | ![Image 2](home_page.jpeg) | ![Image 3](counter_fragment.jpeg) |
+| ![Image 1](ozinshe1.png) | ![Image 2](home_page.jpeg) | ![Image 3](movie_details_page.jpeg) |
 | *Login Screen* | *Home Screen* | *Screen 3* |
 |       |       |       |
 | :---: | :---: | :---: |
-| ![Image 1](camera_page.jpeg) | ![Image 2](scanner.jpeg) | ![Image 3](result.jpeg) |
+| ![Image 1](series_apge.jpeg) | ![Image 2](search_page.jpeg) | ![Image 3](profile_page.jpeg) |
 | *Camera Screen* | *Scanner Screen* | *Result Screen* |
 
 |       |       |       |
