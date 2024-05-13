@@ -7,16 +7,11 @@ On the OZINŞE service, every user between the ages of 9 and 16 with different t
 |       |       |       |
 | :---: | :---: | :---: |
 | ![Image 1](ozinshe1.png) | ![Image 2](home_page.jpeg) | ![Image 3](movie_details_page.jpeg) |
-| *Login Screen* | *Home Screen* | *Screen 3* |
+| *Login Screen* | *Home Screen* | *Movie Details Screen* |
 |       |       |       |
 | :---: | :---: | :---: |
 | ![Image 1](series_apge.jpeg) | ![Image 2](search_page.jpeg) | ![Image 3](profile_page.jpeg) |
-| *Camera Screen* | *Scanner Screen* | *Result Screen* |
-
-|       |       |       |
-| :---: | :---: | :---: |
-| ![Image 1](ended.jpeg) | ![Image 2](bottom_sheet.jpeg) |
-| *Sended Data to Db* | *Bottom Sheet* |
+| *Series Screen* | *Search Screen* | *Profile Screen* |
 
 # <span style="font-size:48px;">**Stack**</span>
 **MVVM pattern**: The architecture of the application is written in MVVM pattern
